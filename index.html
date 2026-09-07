@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
@@ -41,38 +41,70 @@
   }
 
   header {
-    padding: 10px 20px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: rgba(15, 14, 19, 0.7);
+    backdrop-filter: blur(12px);
     z-index: 10;
-    height: 50px;
+    height: 60px;
     flex-shrink: 0;
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #dfb558, #c9a24b);
+    color: #1a1202;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    font-family: "Hind Siliguri", sans-serif;
+    box-shadow: 0 4px 15px rgba(201, 162, 75, 0.35);
   }
 
   .wordmark {
     font-family: "Fraunces", serif;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
+    letter-spacing: 0.5px;
   }
   .wordmark span { color: var(--accent); }
 
   #changeBookBtn {
     display: none;
     align-items: center;
-    gap: 6px;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.14);
-    color: var(--muted);
-    padding: 5px 12px;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(201, 162, 75, 0.3);
+    color: var(--accent);
+    padding: 7px 16px;
     border-radius: var(--radius-full);
-    font-size: 12.5px;
+    font-size: 13px;
+    font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
-  #changeBookBtn:hover { color: var(--ink); border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.05); }
+  #changeBookBtn:hover { 
+    background: var(--accent); 
+    color: #1a1202; 
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  #changeBookBtn svg { width: 15px; height: 15px; }
 
   main {
     flex: 1;
@@ -83,48 +115,48 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: calc(100% - 50px);
+    height: calc(100% - 60px);
   }
 
-  /* ---------- আপলোড স্ক্রিন ---------- */
   #uploadScreen {
     text-align: center;
-    max-width: 400px;
+    max-width: 440px;
     width: 90%;
-    padding: 40px 28px;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.7);
-    backdrop-filter: blur(10px);
+    padding: 48px 32px;
+    border-radius: 24px;
+    background: linear-gradient(145deg, rgba(28, 23, 35, 0.85), rgba(15, 14, 19, 0.95));
+    border: 1px solid rgba(201, 162, 75, 0.2);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1);
+    backdrop-filter: blur(16px);
   }
   #uploadScreen .icon-wrap {
-    width: 56px; height: 56px;
-    margin: 0 auto 16px;
-    border-radius: 16px;
+    width: 64px; height: 64px;
+    margin: 0 auto 20px;
+    border-radius: 20px;
     background: var(--accent-dim);
     display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(201, 162, 75, 0.3);
   }
-  #uploadScreen .icon-wrap svg { width: 26px; height: 26px; color: var(--accent); }
-  #uploadScreen h1 { font-family: "Fraunces", serif; font-weight: 600; font-size: 22px; margin: 0 0 8px; }
-  #uploadScreen p { color: var(--muted); font-size: 13.5px; margin: 0 0 24px; line-height: 1.5; }
+  #uploadScreen .icon-wrap svg { width: 30px; height: 30px; color: var(--accent); }
+  #uploadScreen h1 { font-family: "Fraunces", serif; font-weight: 600; font-size: 24px; margin: 0 0 10px; color: #fff; }
+  #uploadScreen p { color: var(--muted); font-size: 14px; margin: 0 0 28px; line-height: 1.6; }
 
   .pick-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--accent);
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #dfb558, #c9a24b);
     color: #1a1202;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 11px 24px;
+    font-weight: 700;
+    font-size: 14.5px;
+    padding: 13px 28px;
     border-radius: var(--radius-full);
     cursor: pointer;
-    box-shadow: 0 10px 20px -8px rgba(201, 162, 75, 0.5);
-    transition: all 0.2s ease;
+    box-shadow: 0 10px 25px -8px rgba(201, 162, 75, 0.6);
+    transition: all 0.25s ease;
   }
-  .pick-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+  .pick-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 14px 28px -6px rgba(201, 162, 75, 0.7); }
+  .pick-btn svg { width: 18px; height: 18px; }
   #pdfInput { display: none; }
 
-  /* ---------- রিডার এলাকা ---------- */
   #readerArea {
     display: none;
     width: 100%;
@@ -151,7 +183,6 @@
   }
   #stage:active { cursor: grabbing; }
 
-  /* সাইড অ্যারো বাটন */
   .side-nav-btn {
     position: absolute;
     top: 50%;
@@ -210,7 +241,6 @@
   .page { background: var(--paper); overflow: hidden; }
   .page canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
 
-  /* ভাসমান কন্ট্রোল বার */
   #controls {
     display: none;
     align-items: center;
@@ -265,7 +295,7 @@
     color: var(--muted);
   }
   #pageInput {
-    width: 36px; text-align: center;
+    width: 48px; text-align: center;
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.16);
     border-radius: 6px;
@@ -290,11 +320,13 @@
   }
 
   @media (max-width: 640px) {
-    header { padding: 6px 12px; }
+    header { padding: 8px 16px; height: 55px; }
+    .brand-icon { width: 32px; height: 32px; font-size: 17px; border-radius: 8px; }
+    .wordmark { font-size: 19px; }
     .btn-group { padding: 3px 5px; gap: 1px; }
     .icon-btn { width: 29px; height: 29px; }
     .icon-btn svg { width: 14px; height: 14px; }
-    #pageInput { width: 30px; font-size: 12px; }
+    #pageInput { width: 42px; font-size: 12px; }
     .page-jump { font-size: 11.5px; padding: 0 2px; }
     .side-nav-btn { width: 36px; height: 36px; }
     .side-nav-btn.left { left: 6px; }
@@ -305,9 +337,12 @@
 <body>
 
 <header>
-  <div class="wordmark">পাঠ<span>ঘর</span></div>
+  <div class="brand-logo">
+    <div class="brand-icon">পা</div>
+    <div class="wordmark">পাঠ<span>ঘর</span></div>
+  </div>
   <button id="changeBookBtn">
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10a6 6 0 1 1 1.8 4.3M4 10V6m0 4h4"/></svg>
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10a6 6 0 1 1 1.8 4.3M4 10V6m0 4h4"/></svg>
     নতুন PDF
   </button>
 </header>
@@ -316,13 +351,13 @@
 
   <div id="uploadScreen">
     <div class="icon-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4c-2-1-4.5-1.5-7-1.5v15c2.5 0 5 .5 7 1.5m0-15c2-1 4.5-1.5 7-1.5v15c-2.5 0-5 .5-7 1.5m0-15v15"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4c-2-1-4.5-1.5-7-1.5v15c2.5 0 5 .5 7 1.5m0-15c2-1 4.5-1.5 7-1.5v15c-2.5 0-5 .5-7 1.5m0-15v15"/></svg>
     </div>
     <h1>আপনার বইটি খুলুন</h1>
-    <p>আপনার ডিভাইস থেকে PDF বেছে নিন — মোবাইল ও কম্পিউটারে নিখুঁত দেখাবে।</p>
+    <p>আপনার ডিভাইস থেকে PDF ফাইল বেছে নিন — নিমিষেই পাতাগুলো রেন্ডার হয়ে ওপেন হবে।</p>
     <label class="pick-btn" for="pdfInput">
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3v10m0 0-3.5-3.5M10 13l3.5-3.5M4 15.5v1a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>
-      PDF ফাইল বেছে নিন
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3v10m0 0-3.5-3.5M10 13l3.5-3.5M4 15.5v1a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>
+      নতুন PDF ফাইল বেছে নিন
     </label>
     <input type="file" id="pdfInput" accept="application/pdf,.pdf" />
   </div>
@@ -338,7 +373,7 @@
 
       <div id="loading">
         <div class="spinner"></div>
-        বই প্রসেসিং করা হচ্ছে...
+        বই প্রস্তুত করা হচ্ছে... <span id="loadProgress">(০%)</span>
       </div>
       <div id="bookWrap">
         <div id="book"></div>
@@ -354,7 +389,7 @@
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12.5 5 7.5 10l5 5"/></svg>
         </button>
         <div class="page-jump">
-          <input type="number" id="pageInput" min="1" value="1" aria-label="পাতা নম্বর" />
+          <input type="text" id="pageInput" value="১" aria-label="পাতা নম্বর" />
           <span id="totalPages">/ ১</span>
         </div>
         <button class="icon-btn" id="nextBtn" title="পরের পাতা">
@@ -401,12 +436,16 @@
 
   const bnDigits = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
   const toBn = (n) => String(n).split("").map(d => bnDigits[d] ?? d).join("");
-  const toEnDigits = (s) => String(s).replace(/[০-৯]/g, (d) => bnDigits.indexOf(d));
+  
+  const toEnDigits = (s) => {
+    return String(s).replace(/[০-৯]/g, (d) => bnDigits.indexOf(d));
+  };
 
   const uploadScreen  = document.getElementById("uploadScreen");
   const readerArea    = document.getElementById("readerArea");
   const stage         = document.getElementById("stage");
   const loadingEl     = document.getElementById("loading");
+  const loadProgress  = document.getElementById("loadProgress");
   const bookWrap      = document.getElementById("bookWrap");
   const bookEl        = document.getElementById("book");
   const controlsEl    = document.getElementById("controls");
@@ -418,8 +457,9 @@
 
   let pageFlip;
   let totalPages = 0;
+  let canvasScale = 1;
+  let pdfDoc = null;
 
-  // ---------------- পজিশন ও জুম স্টেট ----------------
   let zoom = 1;
   let panX = 0;
   let panY = 0;
@@ -442,7 +482,6 @@
     updateTransform();
   }
 
-  // ---------------- ড্রাগ ও প্যান লজিক ----------------
   let startX = 0, startY = 0;
   let initialPanX = 0, initialPanY = 0;
   let isDragging = false;
@@ -454,7 +493,6 @@
     startY = e.clientY;
     initialPanX = panX;
     initialPanY = panY;
-
     try { stage.setPointerCapture(e.pointerId); } catch(err){}
   });
 
@@ -479,7 +517,6 @@
     const diffY = e.clientY - startY;
     const minSwipeDist = 35;
 
-    // Zoom == 1 মোডে (যা এখন বাই-ডিফল্ট বড় দেখাচ্ছে) নিখুঁত সোয়াইপ
     if (zoom === 1 && pageFlip && Math.abs(diffX) > minSwipeDist && Math.abs(diffX) > Math.abs(diffY)) {
       if (diffX < 0) {
         pageFlip.flipNext();
@@ -489,11 +526,8 @@
     }
   });
 
-  stage.addEventListener("pointercancel", () => {
-    isDragging = false;
-  });
+  stage.addEventListener("pointercancel", () => { isDragging = false; });
 
-  // ---------------- সাইড বাটন নেভিগেশন ----------------
   document.getElementById("sidePrevBtn").addEventListener("click", (e) => {
     e.stopPropagation();
     if (pageFlip) pageFlip.flipPrev();
@@ -504,7 +538,6 @@
     if (pageFlip) pageFlip.flipNext();
   });
 
-  // ---------------- কাগজের সাউন্ড ----------------
   let audioCtx;
   function playFlipSound() {
     if (isMuted) return;
@@ -542,11 +575,8 @@
       noise.connect(filter);
       filter.connect(gain);
       gain.connect(audioCtx.destination);
-
       noise.start(now);
-    } catch (e) {
-      console.warn("Sound error:", e);
-    }
+    } catch (e) {}
   }
 
   muteBtn.addEventListener("click", () => {
@@ -554,9 +584,8 @@
     muteBtn.classList.toggle("muted", isMuted);
   });
 
-  // ---------------- নেভিগেশন ও কাউন্টার ----------------
   function updateCounter(current) {
-    pageInput.value = current + 1;
+    pageInput.value = toBn(current + 1);
     totalPagesLbl.textContent = `/ ${toBn(totalPages)}`;
     document.getElementById("firstBtn").disabled = current === 0;
     document.getElementById("prevBtn").disabled = current === 0;
@@ -564,13 +593,30 @@
     document.getElementById("lastBtn").disabled = current >= totalPages - 1;
   }
 
-  function goToPage(index) {
+  async function goToPage(index) {
     const clamped = Math.max(0, Math.min(totalPages - 1, index));
+    
+    const existingPages = bookEl.querySelectorAll(".page");
+    if (existingPages[clamped] && !existingPages[clamped].querySelector("canvas")) {
+      try {
+        const page = await pdfDoc.getPage(clamped + 1);
+        const viewport = page.getViewport({ scale: canvasScale });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+        existingPages[clamped].innerHTML = "";
+        existingPages[clamped].appendChild(canvas);
+        pageFlip.updateFromHtml(document.querySelectorAll(".page"));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     pageFlip.turnToPage(clamped);
     updateCounter(clamped);
   }
 
-  // ---------------- জুম ও রোটেট ----------------
   document.getElementById("zoomInBtn").addEventListener("click", () => {
     zoom = Math.min(3.5, zoom + 0.3);
     updateTransform();
@@ -593,7 +639,6 @@
 
   document.getElementById("resetViewBtn").addEventListener("click", resetView);
 
-  // ---------------- PDF লোডিং ও ডিসপ্লে ----------------
   function showError(message) {
     loadingEl.classList.remove("active");
     errorBox.textContent = message;
@@ -618,14 +663,14 @@
     loadingEl.classList.add("active");
     errorBox.style.display = "none";
 
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 50));
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      totalPages = pdf.numPages;
+      pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      totalPages = pdfDoc.numPages;
 
-      const firstPage = await pdf.getPage(1);
+      const firstPage = await pdfDoc.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
       const aspect = baseViewport.height / baseViewport.width;
 
@@ -635,7 +680,6 @@
 
       let pWidth, pHeight;
 
-      // ডিফল্ট পেজ রেন্ডার সাইজ বাড়িয়ে বড় ও স্পষ্ট ভিউ সেট করা হলো
       if (isMobile) {
         pWidth = stageW * 0.98;
         pHeight = pWidth * aspect;
@@ -652,21 +696,26 @@
         }
       }
 
-      // লেখার ক্ল্যারিটি আরও হাই-ডেফিনিশন করতে ক্যানভাস স্কেল বাড়ানো হলো
-      const canvasScale = Math.max(3, (pWidth * 2) / baseViewport.width);
+      canvasScale = Math.max(2.5, (pWidth * 2) / baseViewport.width);
 
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: canvasScale });
-
-        const canvas = document.createElement("canvas");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
-
+      bookEl.innerHTML = "";
+      
+      for (let i = 1; i <= totalPages; i++) {
         const pageDiv = document.createElement("div");
         pageDiv.className = "page";
-        pageDiv.appendChild(canvas);
+        
+        if (i <= 10) {
+          loadProgress.textContent = `(${toBn(Math.round((i / totalPages) * 100))}%)`;
+          const page = await pdfDoc.getPage(i);
+          const viewport = page.getViewport({ scale: canvasScale });
+
+          const canvas = document.createElement("canvas");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+          pageDiv.appendChild(canvas);
+        }
+        
         bookEl.appendChild(pageDiv);
       }
 
@@ -694,6 +743,33 @@
       });
 
       updateCounter(0);
+
+      if (totalPages > 10) {
+        setTimeout(async () => {
+          const allPagesDivs = bookEl.querySelectorAll(".page");
+          for (let i = 11; i <= totalPages; i++) {
+            try {
+              const page = await pdfDoc.getPage(i);
+              const viewport = page.getViewport({ scale: canvasScale });
+
+              const canvas = document.createElement("canvas");
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
+              await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+
+              if (allPagesDivs[i - 1]) {
+                allPagesDivs[i - 1].innerHTML = "";
+                allPagesDivs[i - 1].appendChild(canvas);
+                pageFlip.updateFromHtml(document.querySelectorAll(".page"));
+              }
+            } catch (err) {
+              console.error(`Page ${i} load error:`, err);
+            }
+            await new Promise(r => setTimeout(r, 15));
+          }
+        }, 200);
+      }
+
     } catch (err) {
       showError("PDF ফাইলটি পড়া যায়নি। সমস্যা: " + err.message);
       console.error(err);
@@ -712,9 +788,26 @@
   document.getElementById("nextBtn").addEventListener("click", () => pageFlip.flipNext());
   document.getElementById("lastBtn").addEventListener("click", () => goToPage(totalPages - 1));
 
+  // ইনপুট বক্সে লিখে এন্টার দিলে বা ফোকাস হারালে পাতায় চলে যাবে
+  pageInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      pageInput.blur();
+      const cleanVal = toEnDigits(pageInput.value.trim());
+      const n = parseInt(cleanVal, 10);
+      if (!isNaN(n)) {
+        goToPage(n - 1);
+      }
+    }
+  });
+
   pageInput.addEventListener("change", () => {
-    const n = parseInt(toEnDigits(pageInput.value), 10);
-    if (!isNaN(n)) goToPage(n - 1);
+    const cleanVal = toEnDigits(pageInput.value.trim());
+    const n = parseInt(cleanVal, 10);
+    if (!isNaN(n)) {
+      goToPage(n - 1);
+    } else {
+      updateCounter(pageFlip.getCurrentPageIndex());
+    }
   });
 
   document.getElementById("fullscreenBtn").addEventListener("click", () => {
