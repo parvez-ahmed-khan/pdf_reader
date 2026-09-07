@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>বুক রিডার</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+
+<style>
+  :root {
+    --bg: #14121a;
+    --bg-2: #1c1926;
+    --ink: #ece6d8;
+    --muted: #948d9c;
+    --paper: #f6efdd;
+    --accent: #c9a24b;
+    --accent-dim: rgba(201, 162, 75, 0.18);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+
+  body {
+    background: radial-gradient(ellipse 900px 500px at 50% 38%, var(--bg-2), var(--bg) 70%);
+    color: var(--ink);
+    font-family: "Hind Siliguri", "Inter", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  header {
+    padding: 28px 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .wordmark {
+    font-family: "Fraunces", serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .wordmark span { color: var(--accent); }
+
+  #changeBookBtn {
+    display: none;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  #changeBookBtn:hover { color: var(--ink); border-color: rgba(255,255,255,0.3); }
+
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px 40px;
+  }
+
+  /* ---------- আপলোড স্ক্রিন ---------- */
+  #uploadScreen {
+    text-align: center;
+    max-width: 380px;
+    padding: 44px 36px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  #uploadScreen .icon {
+    width: 46px;
+    height: 46px;
+    margin: 0 auto 18px;
+    color: var(--accent);
+  }
+
+  #uploadScreen h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0 0 8px;
+  }
+
+  #uploadScreen p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 24px;
+    line-height: 1.6;
+  }
+
+  .pick-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #1a1508;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 12px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  .pick-btn:hover { filter: brightness(1.08); }
+  #pdfInput { display: none; }
+
+  /* ---------- স্টেজ ---------- */
+  #stage { position: relative; display: none; justify-content: center; }
+  #stage.active { display: flex; }
+
+  #stage::before {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: -30px;
+    width: 70%; height: 40px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), transparent 72%);
+    filter: blur(2px);
+  }
+
+  #loading { display: none; margin: 80px 0; text-align: center; color: var(--muted); font-size: 15px; }
+  #loading.active { display: block; }
+
+  #loading .spinner {
+    width: 26px; height: 26px; margin: 0 auto 14px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-dim);
+    border-top-color: var(--accent);
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #book { display: none; }
+  .page { background: var(--paper); }
+  .page canvas { width: 100%; height: 100%; display: block; }
+
+  #controls {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    margin-top: 34px;
+    padding: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(6px);
+  }
+  #controls.active { display: flex; }
+
+  .nav-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-btn:hover { background: var(--accent-dim); color: var(--accent); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; background: none; color: var(--ink); }
+
+  #pageCounter {
+    min-width: 84px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  #errorBox {
+    display: none;
+    max-width: 420px;
+    margin: 24px auto 0;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: rgba(220, 90, 70, 0.1);
+    border: 1px solid rgba(220, 90, 70, 0.3);
+    color: #e8b9ae;
+    font-size: 13.5px;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #loading .spinner { animation: none; border-top-color: var(--accent-dim); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">পাঠ<span>ঘর</span></div>
+  <button id="changeBookBtn">নতুন PDF খুলুন</button>
+</header>
+
+<main>
+
+  <!-- ধাপ ১: ব্যবহারকারী নিজে PDF বেছে নেবে -->
+  <div id="uploadScreen">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>আপনার বইটি খুলুন</h1>
+    <p>ফোন থেকে একটি PDF ফাইল বেছে নিন — পাতা উল্টিয়ে বইয়ের মতো পড়তে পারবেন। ফাইলটি শুধু আপনার ব্রাউজারেই খোলে, কোথাও আপলোড হয় না।</p>
+    <label class="pick-btn" for="pdfInput">PDF বেছে নিন</label>
+    <input type="file" id="pdfInput" accept="application/pdf,.pdf" />
+  </div>
+
+  <!-- ধাপ ২: বই -->
+  <div id="stage">
+    <div id="loading">
+      <div class="spinner"></div>
+      বই খোলা হচ্ছে...
+    </div>
+    <div id="book"></div>
+  </div>
+
+  <div id="controls">
+    <button class="nav-btn" id="prevBtn" aria-label="আগের পাতা">‹</button>
+    <div id="pageCounter">১ / ১</div>
+    <button class="nav-btn" id="nextBtn" aria-label="পরের পাতা">›</button>
+  </div>
+
+  <div id="errorBox"></div>
+</main>
+
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+  const bnDigits = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
+  const toBn = (n) => String(n).split("").map(d => bnDigits[d] ?? d).join("");
+
+  const uploadScreen = document.getElementById("uploadScreen");
+  const stage = document.getElementById("stage");
+  const loadingEl = document.getElementById("loading");
+  const bookEl = document.getElementById("book");
+  const controlsEl = document.getElementById("controls");
+  const errorBox = document.getElementById("errorBox");
+  const changeBookBtn = document.getElementById("changeBookBtn");
+
+  let pageFlip;
+  let totalPages = 0;
+
+  function updateCounter(current) {
+    document.getElementById("pageCounter").textContent = `${toBn(current + 1)} / ${toBn(totalPages)}`;
+    document.getElementById("prevBtn").disabled = current === 0;
+    document.getElementById("nextBtn").disabled = current === totalPages - 1;
+  }
+
+  function showError(message) {
+    loadingEl.classList.remove("active");
+    errorBox.textContent = message;
+    errorBox.style.display = "block";
+  }
+
+  function resetToUpload() {
+    uploadScreen.style.display = "block";
+    stage.classList.remove("active");
+    controlsEl.classList.remove("active");
+    changeBookBtn.style.display = "none";
+    errorBox.style.display = "none";
+    bookEl.innerHTML = "";
+    bookEl.style.display = "none";
+    document.getElementById("pdfInput").value = "";
+  }
+
+  async function openPDF(file) {
+    uploadScreen.style.display = "none";
+    stage.classList.add("active");
+    loadingEl.classList.add("active");
+    errorBox.style.display = "none";
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      totalPages = pdf.numPages;
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.5 });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "page";
+        if (i === 1 || i === pdf.numPages) pageDiv.setAttribute("data-density", "hard");
+        pageDiv.appendChild(canvas);
+        bookEl.appendChild(pageDiv);
+      }
+
+      loadingEl.classList.remove("active");
+      bookEl.style.display = "block";
+      controlsEl.classList.add("active");
+      changeBookBtn.style.display = "inline-block";
+
+      pageFlip = new St.PageFlip(bookEl, {
+        width: 420,
+        height: 580,
+        size: "stretch",
+        minWidth: 260,
+        maxWidth: 900,
+        minHeight: 360,
+        maxHeight: 1200,
+        showCover: true,
+        mobileScrollSupport: true,
+        drawShadow: true,
+        maxShadowOpacity: 0.5,
+      });
+
+      pageFlip.loadFromHTML(document.querySelectorAll(".page"));
+      pageFlip.on("flip", (e) => updateCounter(e.data));
+      updateCounter(0);
+    } catch (err) {
+      showError("বইটা খোলা যায়নি। ফাইলটা ঠিকঠাক PDF কিনা যাচাই করুন। (" + err.message + ")");
+      console.error(err);
+    }
+  }
+
+  document.getElementById("pdfInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) openPDF(file);
+  });
+
+  changeBookBtn.addEventListener("click", resetToUpload);
+  document.getElementById("prevBtn").addEventListener("click", () => pageFlip.flipPrev());
+  document.getElementById("nextBtn").addEventListener("click", () => pageFlip.flipNext());
+</script>
+
+</body>
+</html>
