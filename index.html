@@ -21,8 +21,8 @@
     --paper: #f6efdd;
     --accent: #c9a24b;
     --accent-dim: rgba(201, 162, 75, 0.16);
-    --bar-bg: rgba(28, 25, 38, 0.88);
-    --bar-border: rgba(255, 255, 255, 0.12);
+    --bar-bg: rgba(28, 25, 38, 0.92);
+    --bar-border: rgba(255, 255, 255, 0.14);
     --radius-lg: 20px;
     --radius-full: 999px;
   }
@@ -48,6 +48,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.06);
     z-index: 10;
     height: 50px;
+    flex-shrink: 0;
   }
 
   .wordmark {
@@ -81,7 +82,8 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    height: calc(100vh - 50px);
+    width: 100%;
+    height: calc(100% - 50px);
   }
 
   /* ---------- আপলোড স্ক্রিন ---------- */
@@ -131,7 +133,7 @@
     align-items: center;
     justify-content: space-between;
     opacity: 0;
-    padding: 5px;
+    padding-bottom: 10px;
   }
   #readerArea.active { display: flex; animation: rise 0.3s ease forwards; }
   @keyframes rise { to { opacity: 1; } }
@@ -139,14 +141,17 @@
   #stage {
     position: relative;
     width: 100%;
-    height: calc(100vh - 110px);
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    touch-action: none;
+    -ms-touch-action: none;
+    overscroll-behavior: none;
+    cursor: grab;
   }
-  #stage.can-pan { cursor: grab; }
-  #stage.can-pan:active { cursor: grabbing; }
+  #stage:active { cursor: grabbing; }
 
   #loading { display: none; text-align: center; color: var(--muted); font-size: 14px; }
   #loading.active { display: block; }
@@ -165,35 +170,46 @@
     justify-content: center;
     transform-origin: center center;
     will-change: transform;
+    transition: transform 0.05s ease-out;
   }
   
-  #book { display: none; margin: 0 auto; box-shadow: 0 25px 60px rgba(0,0,0,0.7); }
+  #book { 
+    display: none; 
+    margin: 0 auto; 
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7); 
+    pointer-events: none; 
+  }
   .page { background: var(--paper); overflow: hidden; }
   .page canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
 
   /* ভাসমান কন্ট্রোল বার */
   #controls {
     display: none;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 6px;
-    z-index: 20;
-    height: 50px;
+    padding: 4px 10px;
+    z-index: 30;
+    max-width: 98vw;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
   }
+  #controls::-webkit-scrollbar { display: none; }
   #controls.active { display: flex; }
 
   .btn-group {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 2px;
-    padding: 4px 6px;
+    padding: 4px 8px;
     border-radius: var(--radius-full);
     background: var(--bar-bg);
     border: 1px solid var(--bar-border);
     backdrop-filter: blur(12px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    flex-shrink: 0;
   }
 
   .icon-btn {
@@ -205,18 +221,19 @@
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.15s ease;
+    flex-shrink: 0;
   }
   .icon-btn svg { width: 16px; height: 16px; }
   .icon-btn:hover:not(:disabled) { background: var(--accent-dim); color: var(--accent); }
   .icon-btn:disabled { opacity: 0.25; cursor: default; }
   .icon-btn.muted { opacity: 0.4; }
 
-  .divider { width: 1px; height: 16px; background: rgba(255,255,255,0.12); margin: 0 2px; }
+  .divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 3px; flex-shrink: 0; }
 
   .page-jump {
     display: flex; align-items: center; gap: 4px;
     padding: 0 4px;
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--muted);
   }
   #pageInput {
@@ -245,11 +262,12 @@
   }
 
   @media (max-width: 640px) {
-    header { padding: 8px 12px; }
-    #uploadScreen { padding: 30px 18px; }
-    .btn-group { padding: 3px 4px; }
-    .icon-btn { width: 28px; height: 28px; }
+    header { padding: 6px 12px; }
+    .btn-group { padding: 3px 5px; gap: 1px; }
+    .icon-btn { width: 29px; height: 29px; }
     .icon-btn svg { width: 14px; height: 14px; }
+    #pageInput { width: 30px; font-size: 12px; }
+    .page-jump { font-size: 11.5px; padding: 0 2px; }
   }
 </style>
 </head>
@@ -270,7 +288,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4c-2-1-4.5-1.5-7-1.5v15c2.5 0 5 .5 7 1.5m0-15c2-1 4.5-1.5 7-1.5v15c-2.5 0-5 .5-7 1.5m0-15v15"/></svg>
     </div>
     <h1>আপনার বইটি খুলুন</h1>
-    <p>আপনার ডিভাইস থেকে PDF বেছে নিন — পিসি বা মোবাইলের স্ক্রিন অনুযায়ী সম্পূর্ণ ফুল-সাইজ নিবে।</p>
+    <p>আপনার ডিভাইস থেকে PDF বেছে নিন — মোবাইল ও কম্পিউটারে নিখুঁত দেখাবে।</p>
     <label class="pick-btn" for="pdfInput">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3v10m0 0-3.5-3.5M10 13l3.5-3.5M4 15.5v1a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>
       PDF ফাইল বেছে নিন
@@ -289,7 +307,6 @@
       </div>
     </div>
 
-    <!-- কন্ট্রোল বার -->
     <div id="controls">
       <div class="btn-group">
         <button class="icon-btn" id="firstBtn" title="প্রথম পাতা">
@@ -375,9 +392,6 @@
     if (zoom <= 1) {
       panX = 0;
       panY = 0;
-      stage.classList.remove("can-pan");
-    } else {
-      stage.classList.add("can-pan");
     }
     bookWrap.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rotateDeg}deg)`;
   }
@@ -390,47 +404,152 @@
     updateTransform();
   }
 
-  // ---------------- জুম ইন করলে (zoom > 1) ড্রাগ সুবিধা ----------------
+  // ---------------- টাচ, সোয়াইপ ও ড্রাগ লজিক ----------------
+  let startX = 0, startY = 0;
+  let initialPanX = 0, initialPanY = 0;
   let isDragging = false;
-  let startX, startY;
+  let gestureWasZoomed = false;
+  let gestureCanFlip = false;
+  let activePointerId = null;
 
-  stage.addEventListener("mousedown", (e) => {
-    if (zoom <= 1) return;
+  // Zoom অবস্থায় শুধু দৃশ্যমান বইয়ের ৪টি ছোট corner hit-zone থেকে page swipe হবে।
+  function isInBookCorner(x, y) {
+    const rect = bookWrap.getBoundingClientRect();
+    if (!rect.width || !rect.height) return false;
+
+    const cornerSize = Math.min(90, Math.max(48, Math.min(rect.width, rect.height) * 0.18));
+
+    const left   = x >= rect.left && x <= rect.left + cornerSize;
+    const right  = x <= rect.right && x >= rect.right - cornerSize;
+    const top    = y >= rect.top && y <= rect.top + cornerSize;
+    const bottom = y <= rect.bottom && y >= rect.bottom - cornerSize;
+
+    return (left || right) && (top || bottom);
+  }
+
+  // ------------------------------------------------------------
+  // NORMAL MODE (zoom == 1): normal left/right swipe = page flip
+  // ------------------------------------------------------------
+  stage.addEventListener("pointerdown", (e) => {
     if (e.target.closest("#controls")) return;
+    if (zoom > 1.0001) return; // zoom mode is handled below at document capture level
+
     isDragging = true;
-    startX = e.clientX - panX;
-    startY = e.clientY - panY;
+    activePointerId = e.pointerId;
+    startX = e.clientX;
+    startY = e.clientY;
+
+    try { stage.setPointerCapture(e.pointerId); } catch(err) {}
   });
 
-  window.addEventListener("mousemove", (e) => {
-    if (!isDragging || zoom <= 1) return;
-    panX = e.clientX - startX;
-    panY = e.clientY - startY;
+  stage.addEventListener("pointerup", (e) => {
+    if (!isDragging || e.pointerId !== activePointerId || zoom > 1.0001) return;
+
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+    const horizontalSwipe =
+      Math.abs(diffX) > 45 &&
+      Math.abs(diffX) > Math.abs(diffY) * 1.15;
+
+    isDragging = false;
+    activePointerId = null;
+    try { stage.releasePointerCapture(e.pointerId); } catch(err) {}
+
+    if (horizontalSwipe && pageFlip) {
+      if (diffX < 0) pageFlip.flipNext();
+      else pageFlip.flipPrev();
+    }
+  });
+
+  stage.addEventListener("pointercancel", (e) => {
+    if (e.pointerId === activePointerId) {
+      isDragging = false;
+      activePointerId = null;
+    }
+  });
+
+  // ------------------------------------------------------------
+  // ZOOM MODE: capture at DOCUMENT level so PageFlip cannot steal it.
+  // Non-corner = PAN ONLY. Corner + horizontal swipe = PAGE FLIP.
+  // ------------------------------------------------------------
+  document.addEventListener("pointerdown", (e) => {
+    if (zoom <= 1.0001) return;
+    if (!stage.contains(e.target)) return;
+    if (e.target.closest("#controls")) return;
+
+    gestureWasZoomed = true;
+    gestureCanFlip = isInBookCorner(e.clientX, e.clientY);
+    isDragging = true;
+    activePointerId = e.pointerId;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialPanX = panX;
+    initialPanY = panY;
+
+    // Prevent the PageFlip library / browser from receiving this gesture.
+    e.preventDefault();
+    e.stopPropagation();
+    try { stage.setPointerCapture(e.pointerId); } catch(err) {}
+  }, true);
+
+  document.addEventListener("pointermove", (e) => {
+    if (!gestureWasZoomed || !isDragging || e.pointerId !== activePointerId) return;
+
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+
+    // Every zoomed drag pans, including a corner drag.
+    panX = initialPanX + diffX;
+    panY = initialPanY + diffY;
     updateTransform();
-  });
 
-  window.addEventListener("mouseup", () => { isDragging = false; });
+    // Keep PageFlip/browser gesture handling out of the zoom interaction.
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
 
-  stage.addEventListener("touchstart", (e) => {
-    if (zoom <= 1) return;
-    if (e.touches.length === 1) {
-      isDragging = true;
-      startX = e.touches[0].clientX - panX;
-      startY = e.touches[0].clientY - panY;
+  document.addEventListener("pointerup", (e) => {
+    if (!gestureWasZoomed || !isDragging || e.pointerId !== activePointerId) return;
+
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+    const horizontalSwipe =
+      Math.abs(diffX) > 45 &&
+      Math.abs(diffX) > Math.abs(diffY) * 1.15;
+
+    const shouldFlip = gestureCanFlip && horizontalSwipe && pageFlip;
+
+    // Clear gesture state BEFORE calling pageFlip/resetView.
+    isDragging = false;
+    activePointerId = null;
+    gestureWasZoomed = false;
+    gestureCanFlip = false;
+    try { stage.releasePointerCapture(e.pointerId); } catch(err) {}
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (shouldFlip) {
+      if (diffX < 0) pageFlip.flipNext();
+      else pageFlip.flipPrev();
+
+      // Only a real corner swipe is allowed to reset after the page flip.
+      setTimeout(() => resetView(), 300);
     }
-  }, { passive: true });
+  }, true);
 
-  stage.addEventListener("touchmove", (e) => {
-    if (isDragging && zoom > 1 && e.touches.length === 1) {
-      panX = e.touches[0].clientX - startX;
-      panY = e.touches[0].clientY - startY;
-      updateTransform();
-    }
-  }, { passive: true });
+  document.addEventListener("pointercancel", (e) => {
+    if (!gestureWasZoomed || e.pointerId !== activePointerId) return;
 
-  stage.addEventListener("touchend", () => { isDragging = false; });
+    isDragging = false;
+    activePointerId = null;
+    gestureWasZoomed = false;
+    gestureCanFlip = false;
+    try { stage.releasePointerCapture(e.pointerId); } catch(err) {}
+    e.stopPropagation();
+  }, true);
 
-  // ---------------- সাউন্ড ইফেক্ট ----------------
+  // ---------------- কাগজের সাউন্ড ----------------
   let audioCtx;
   function playFlipSound() {
     if (isMuted) return;
@@ -439,13 +558,15 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
       const now = audioCtx.currentTime;
-      const duration = 0.2;
+      const duration = 0.28;
       const bufferSize = audioCtx.sampleRate * duration;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
 
       for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 1.8);
+        let t = i / bufferSize;
+        let paperEnvelope = Math.sin(t * Math.PI) * Math.pow(1 - t, 0.4);
+        data[i] = (Math.random() * 2 - 1) * paperEnvelope;
       }
 
       const noise = audioCtx.createBufferSource();
@@ -453,12 +574,14 @@
 
       const filter = audioCtx.createBiquadFilter();
       filter.type = "bandpass";
-      filter.frequency.setValueAtTime(2000, now);
-      filter.frequency.exponentialRampToValueAtTime(400, now + duration);
-      filter.Q.value = 1.1;
+      filter.frequency.setValueAtTime(1100, now);
+      filter.frequency.exponentialRampToValueAtTime(3400, now + duration * 0.35);
+      filter.frequency.exponentialRampToValueAtTime(750, now + duration);
+      filter.Q.value = 1.6;
 
       const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.45, now + 0.04);
       gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
       noise.connect(filter);
@@ -492,14 +615,14 @@
     updateCounter(clamped);
   }
 
-  // ---------------- জুম ও রোটেট কন্ট্রোল ----------------
+  // ---------------- জুম ও রোটেট ----------------
   document.getElementById("zoomInBtn").addEventListener("click", () => {
-    zoom = Math.min(3, zoom + 0.25);
+    zoom = Math.min(3.5, zoom + 0.3);
     updateTransform();
   });
 
   document.getElementById("zoomOutBtn").addEventListener("click", () => {
-    zoom = Math.max(0.6, zoom - 0.25);
+    zoom = Math.max(0.6, zoom - 0.3);
     updateTransform();
   });
 
@@ -515,7 +638,7 @@
 
   document.getElementById("resetViewBtn").addEventListener("click", resetView);
 
-  // ---------------- PDF লোডিং ও সঠিক সাইজ রেন্ডারিং ----------------
+  // ---------------- PDF লোডিং ও ডিসপ্লে ----------------
   function showError(message) {
     loadingEl.classList.remove("active");
     errorBox.textContent = message;
@@ -540,7 +663,6 @@
     loadingEl.classList.add("active");
     errorBox.style.display = "none";
 
-    // DOM রেন্ডারিং হওয়া পর্যন্ত অপেক্ষা
     await new Promise(r => setTimeout(r, 100));
 
     try {
@@ -550,25 +672,22 @@
 
       const firstPage = await pdf.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
-      const aspect = baseViewport.height / baseViewport.width; // Height / Width
+      const aspect = baseViewport.height / baseViewport.width;
 
-      // স্ক্রিনের উপলব্ধ জায়গা মাপা
       const isMobile = window.innerWidth <= 768;
       const stageW = stage.clientWidth || window.innerWidth;
-      const stageH = stage.clientHeight || (window.innerHeight - 110);
+      const stageH = stage.clientHeight || (window.innerHeight - 100);
 
       let pWidth, pHeight;
 
       if (isMobile) {
-        // মোবাইলের জন্য স্ক্রিনের ৯০% চওড়া
-        pWidth = stageW * 0.90;
+        pWidth = stageW * 0.94;
         pHeight = pWidth * aspect;
-        if (pHeight > stageH * 0.88) {
-          pHeight = stageH * 0.88;
+        if (pHeight > stageH * 0.92) {
+          pHeight = stageH * 0.92;
           pWidth = pHeight / aspect;
         }
       } else {
-        // পিসির জন্য ২টি পাতা স্ক্রিনের ৯০% জায়গা নিয়ে ওপেন হবে
         let maxW = (stageW * 0.92) / 2;
         let maxH = stageH * 0.88;
 
@@ -581,7 +700,6 @@
         }
       }
 
-      // ক্যানভাস রেন্ডারিং (লেখা যেন ঝাপসা না হয়)
       const canvasScale = Math.max(2, (pWidth * 2) / baseViewport.width);
 
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -604,16 +722,15 @@
       controlsEl.classList.add("active");
       changeBookBtn.style.display = "inline-flex";
 
-      // PageFlip সেটআপ (size: "fixed" ব্যবহার করে বড় সাইজ নিশ্চিত করা হয়েছে)
       pageFlip = new St.PageFlip(bookEl, {
         width: Math.round(pWidth),
         height: Math.round(pHeight),
         size: "fixed",
         showCover: false,
         usePortrait: isMobile,
-        mobileScrollSupport: true,
+        mobileScrollSupport: false,
         drawShadow: true,
-        maxShadowOpacity: 0.5,
+        maxShadowOpacity: 0.5
       });
 
       pageFlip.loadFromHTML(document.querySelectorAll(".page"));
@@ -648,7 +765,7 @@
   });
 
   document.getElementById("fullscreenBtn").addEventListener("click", () => {
-    const elem = document.getElementById("readerArea");
+    const elem = document.documentElement;
     if (!document.fullscreenElement) {
       elem.requestFullscreen?.();
     } else {
