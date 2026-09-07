@@ -18,53 +18,68 @@
     --bg-2: #1c1926;
     --ink: #ece6d8;
     --muted: #948d9c;
+    --faint: #5f5a68;
     --paper: #f6efdd;
     --accent: #c9a24b;
-    --accent-dim: rgba(201, 162, 75, 0.18);
+    --accent-dim: rgba(201, 162, 75, 0.16);
     --bar-bg: rgba(255,255,255,0.045);
-    --bar-border: rgba(255,255,255,0.08);
+    --bar-border: rgba(255,255,255,0.09);
+    --radius-lg: 20px;
+    --radius-full: 999px;
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
 
   body {
-    background: radial-gradient(ellipse 1100px 600px at 50% 32%, var(--bg-2), var(--bg) 70%);
+    background: radial-gradient(ellipse 1100px 620px at 50% 30%, var(--bg-2), var(--bg) 72%);
     color: var(--ink);
     font-family: "Hind Siliguri", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
   }
 
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   header {
-    padding: 22px 28px 0;
+    padding: 24px 30px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
   .wordmark {
     font-family: "Fraunces", serif;
     font-size: 21px;
     font-weight: 600;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
   }
   .wordmark span { color: var(--accent); }
 
   #changeBookBtn {
     display: none;
+    align-items: center;
+    gap: 7px;
     background: none;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.14);
     color: var(--muted);
-    padding: 7px 14px;
-    border-radius: 999px;
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
     font-size: 13px;
-    cursor: pointer;
     font-family: inherit;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   }
-  #changeBookBtn:hover { color: var(--ink); border-color: rgba(255,255,255,0.3); }
+  #changeBookBtn:hover { color: var(--ink); border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.03); }
+  #changeBookBtn svg { width: 15px; height: 15px; }
 
   main {
     flex: 1;
@@ -72,34 +87,65 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 16px 12px 30px;
+    padding: 28px 14px 36px;
   }
 
   /* ---------- আপলোড স্ক্রিন ---------- */
   #uploadScreen {
     text-align: center;
-    max-width: 380px;
-    padding: 44px 36px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.03);
+    max-width: 400px;
+    width: 100%;
+    padding: 52px 40px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
     border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6);
   }
-  #uploadScreen .icon { width: 46px; height: 46px; margin: 0 auto 18px; color: var(--accent); }
-  #uploadScreen h1 { font-family: "Fraunces", serif; font-weight: 600; font-size: 21px; margin: 0 0 8px; }
-  #uploadScreen p { color: var(--muted); font-size: 14px; margin: 0 0 24px; line-height: 1.6; }
+
+  #uploadScreen .icon-wrap {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 22px;
+    border-radius: 16px;
+    background: var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #uploadScreen .icon-wrap svg { width: 27px; height: 27px; color: var(--accent); }
+
+  #uploadScreen h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 10px;
+    letter-spacing: 0.1px;
+  }
+
+  #uploadScreen p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 28px;
+    line-height: 1.7;
+  }
 
   .pick-btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
     background: var(--accent);
-    color: #1a1508;
+    color: #201705;
     font-weight: 500;
     font-size: 15px;
-    padding: 12px 28px;
-    border-radius: 999px;
+    padding: 13px 30px;
+    border-radius: var(--radius-full);
     cursor: pointer;
-    transition: filter 0.15s ease;
+    box-shadow: 0 12px 24px -10px rgba(201, 162, 75, 0.45);
+    transition: filter 0.15s ease, transform 0.15s ease;
   }
-  .pick-btn:hover { filter: brightness(1.08); }
+  .pick-btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
+  .pick-btn:active { transform: translateY(0); }
+  .pick-btn svg { width: 17px; height: 17px; }
   #pdfInput { display: none; }
 
   /* ---------- রিডার এলাকা ---------- */
@@ -109,14 +155,22 @@
     max-width: 1180px;
     flex-direction: column;
     align-items: center;
+    opacity: 0;
+    transform: translateY(10px);
   }
-  #readerArea.active { display: flex; }
+  #readerArea.active {
+    display: flex;
+    animation: rise 0.5s ease forwards;
+  }
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   #readerArea:fullscreen,
   #readerArea:-webkit-full-screen {
     background: var(--bg);
     justify-content: center;
-    padding: 20px;
+    padding: 24px;
   }
 
   #stage {
@@ -129,18 +183,18 @@
   #stage::before {
     content: "";
     position: absolute;
-    left: 50%; bottom: -26px;
-    width: 60%; height: 36px;
+    left: 50%; bottom: -28px;
+    width: 58%; height: 38px;
     transform: translateX(-50%);
     background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), transparent 72%);
-    filter: blur(2px);
+    filter: blur(3px);
     pointer-events: none;
   }
 
-  #loading { display: none; margin: 80px 0; text-align: center; color: var(--muted); font-size: 15px; }
+  #loading { display: none; margin: 90px 0; text-align: center; color: var(--muted); font-size: 14.5px; }
   #loading.active { display: block; }
   #loading .spinner {
-    width: 26px; height: 26px; margin: 0 auto 14px;
+    width: 26px; height: 26px; margin: 0 auto 16px;
     border-radius: 50%;
     border: 2px solid var(--accent-dim);
     border-top-color: var(--accent);
@@ -148,12 +202,11 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* বইয়ের প্রকৃত সাইজ এখানে নির্ধারিত হয় — পুরো readerArea-এর প্রস্থ ব্যবহার করে */
   #bookWrap {
     width: 100%;
     max-width: 1000px;
     transform-origin: top center;
-    transition: transform 0.15s ease;
+    transition: transform 0.18s ease;
   }
   #book { width: 100%; display: none; }
   .page { background: var(--paper); }
@@ -164,8 +217,8 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-top: 40px;
+    gap: 12px;
+    margin-top: 46px;
   }
   #controls.active { display: flex; }
 
@@ -174,10 +227,10 @@
     align-items: center;
     gap: 2px;
     padding: 6px;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background: var(--bar-bg);
     border: 1px solid var(--bar-border);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
   }
 
   .icon-btn {
@@ -186,33 +239,39 @@
     border: none;
     background: transparent;
     color: var(--ink);
-    font-size: 16px;
-    line-height: 1;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s ease, color 0.15s ease;
   }
-  .icon-btn:hover { background: var(--accent-dim); color: var(--accent); }
-  .icon-btn:disabled { opacity: 0.3; cursor: default; background: none; color: var(--ink); }
+  .icon-btn svg { width: 17px; height: 17px; }
+  .icon-btn:hover:not(:disabled) { background: var(--accent-dim); color: var(--accent); }
+  .icon-btn:disabled { opacity: 0.28; cursor: default; }
+
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    margin: 0 4px;
+  }
 
   .page-jump {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 0 8px;
+    padding: 0 10px;
     font-size: 13.5px;
     color: var(--muted);
   }
   #pageInput {
-    width: 40px;
+    width: 38px;
     text-align: center;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 7px;
     color: var(--ink);
     font-size: 13.5px;
     font-family: inherit;
-    padding: 4px 2px;
+    padding: 5px 2px;
   }
   #pageInput::-webkit-outer-spin-button,
   #pageInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -220,22 +279,26 @@
   #errorBox {
     display: none;
     max-width: 420px;
-    margin: 24px auto 0;
-    padding: 14px 18px;
-    border-radius: 10px;
+    margin: 28px auto 0;
+    padding: 15px 20px;
+    border-radius: 12px;
     background: rgba(220, 90, 70, 0.1);
     border: 1px solid rgba(220, 90, 70, 0.3);
     color: #e8b9ae;
     font-size: 13.5px;
     text-align: center;
+    line-height: 1.6;
   }
 
   @media (max-width: 640px) {
     #bookWrap { max-width: 100%; }
+    header { padding: 20px 18px 16px; }
+    #uploadScreen { padding: 42px 26px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     #loading .spinner { animation: none; border-top-color: var(--accent-dim); }
+    #readerArea.active { animation: none; opacity: 1; transform: none; }
   }
 </style>
 </head>
@@ -243,18 +306,26 @@
 
 <header>
   <div class="wordmark">পাঠ<span>ঘর</span></div>
-  <button id="changeBookBtn">নতুন PDF খুলুন</button>
+  <button id="changeBookBtn">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a6 6 0 1 1 1.8 4.3M4 10V6m0 4h4"/></svg>
+    নতুন PDF খুলুন
+  </button>
 </header>
 
 <main>
 
   <div id="uploadScreen">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
+    <div class="icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 4c-2-1-4.5-1.5-7-1.5v15c2.5 0 5 .5 7 1.5m0-15c2-1 4.5-1.5 7-1.5v15c-2.5 0-5 .5-7 1.5m0-15v15"/>
+      </svg>
+    </div>
     <h1>আপনার বইটি খুলুন</h1>
     <p>ফোন থেকে একটি PDF ফাইল বেছে নিন — পাতা উল্টিয়ে বইয়ের মতো পড়তে পারবেন। ফাইলটি শুধু আপনার ব্রাউজারেই খোলে, কোথাও আপলোড হয় না।</p>
-    <label class="pick-btn" for="pdfInput">PDF বেছে নিন</label>
+    <label class="pick-btn" for="pdfInput">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10m0 0-3.5-3.5M10 13l3.5-3.5M4 15.5v1a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg>
+      PDF বেছে নিন
+    </label>
     <input type="file" id="pdfInput" accept="application/pdf,.pdf" />
   </div>
 
@@ -271,20 +342,35 @@
 
     <div id="controls">
       <div class="btn-group">
-        <button class="icon-btn" id="firstBtn" title="প্রথম পাতা">⏮</button>
-        <button class="icon-btn" id="prevBtn" title="আগের পাতা">‹</button>
+        <button class="icon-btn" id="firstBtn" title="প্রথম পাতা">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5 4.5 10l5 5M15.5 5v10"/></svg>
+        </button>
+        <button class="icon-btn" id="prevBtn" title="আগের পাতা">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 5 7.5 10l5 5"/></svg>
+        </button>
         <div class="page-jump">
-          <input type="number" id="pageInput" min="1" value="1" />
+          <input type="number" id="pageInput" min="1" value="1" aria-label="পাতা নম্বর" />
           <span id="totalPages">/ ১</span>
         </div>
-        <button class="icon-btn" id="nextBtn" title="পরের পাতা">›</button>
-        <button class="icon-btn" id="lastBtn" title="শেষ পাতা">⏭</button>
+        <button class="icon-btn" id="nextBtn" title="পরের পাতা">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 5l5 5-5 5"/></svg>
+        </button>
+        <button class="icon-btn" id="lastBtn" title="শেষ পাতা">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 5l5 5-5 5M4.5 5v10"/></svg>
+        </button>
       </div>
 
       <div class="btn-group">
-        <button class="icon-btn" id="zoomOutBtn" title="জুম আউট">−</button>
-        <button class="icon-btn" id="zoomInBtn" title="জুম ইন">+</button>
-        <button class="icon-btn" id="fullscreenBtn" title="ফুল-স্ক্রিন">⛶</button>
+        <button class="icon-btn" id="zoomOutBtn" title="জুম আউট">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8M6 8.5h5"/></svg>
+        </button>
+        <button class="icon-btn" id="zoomInBtn" title="জুম ইন">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8M8.5 6v5M6 8.5h5"/></svg>
+        </button>
+        <div class="divider"></div>
+        <button class="icon-btn" id="fullscreenBtn" title="ফুল-স্ক্রিন">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3H4a1 1 0 0 0-1 1v3M13 3h3a1 1 0 0 1 1 1v3M17 13v3a1 1 0 0 1-1 1h-3M3 13v3a1 1 0 0 0 1 1h3"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -383,17 +469,14 @@
       loadingEl.classList.remove("active");
       bookEl.style.display = "block";
       controlsEl.classList.add("active");
-      changeBookBtn.style.display = "inline-block";
+      changeBookBtn.style.display = "inline-flex";
 
-      // প্রথম পাতার আকার (উচ্চতা/প্রস্থ অনুপাত) থেকে বইয়ের base সাইজ ঠিক করা হচ্ছে
       const firstPage = await pdf.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
       const aspect = baseViewport.height / baseViewport.width;
       const baseWidth = 480;
       const baseHeight = Math.round(baseWidth * aspect);
 
-      // bookWrap-কে একটা নির্দিষ্ট প্রস্থ দেওয়া হচ্ছে, যাতে "stretch" মোড সঠিক জায়গা মেপে
-      // বড় স্ক্রিনে দুই-পাতা (spread) আর ছোট স্ক্রিনে এক-পাতা মোড বেছে নিতে পারে
       pageFlip = new St.PageFlip(bookEl, {
         width: baseWidth,
         height: baseHeight,
