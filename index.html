@@ -229,7 +229,6 @@
     justify-content: center;
     transform-origin: center center;
     will-change: transform;
-    transition: transform 0.05s ease-out;
   }
   
   #book { 
@@ -468,6 +467,7 @@
 
   function updateTransform() {
     if (zoom <= 1) {
+      zoom = 1;
       panX = 0;
       panY = 0;
     }
@@ -482,51 +482,92 @@
     updateTransform();
   }
 
+  // মাল্টি-টাচ ও জেসচার হ্যান্ডলিং (Pinch to Zoom & Pan)
+  const activePointers = new Map();
+  let initialDistance = 0;
+  let initialZoom = 1;
   let startX = 0, startY = 0;
   let initialPanX = 0, initialPanY = 0;
-  let isDragging = false;
 
   stage.addEventListener("pointerdown", (e) => {
     if (e.target.closest("#controls") || e.target.closest(".side-nav-btn")) return;
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    initialPanX = panX;
-    initialPanY = panY;
+    activePointers.set(e.pointerId, e);
     try { stage.setPointerCapture(e.pointerId); } catch(err){}
+
+    if (activePointers.size === 1) {
+      const p = e;
+      startX = p.clientX;
+      startY = p.clientY;
+      initialPanX = panX;
+      initialPanY = panY;
+    } else if (activePointers.size === 2) {
+      const pointers = Array.from(activePointers.values());
+      initialDistance = Math.hypot(
+        pointers[0].clientX - pointers[1].clientX,
+        pointers[0].clientY - pointers[1].clientY
+      );
+      initialZoom = zoom;
+    }
   });
 
   stage.addEventListener("pointermove", (e) => {
-    if (!isDragging) return;
-    const diffX = e.clientX - startX;
-    const diffY = e.clientY - startY;
+    if (!activePointers.has(e.pointerId)) return;
+    activePointers.set(e.pointerId, e);
 
-    if (zoom > 1) {
+    if (activePointers.size === 2) {
+      // দুই আঙুলে জুম করা (Pinch Zoom)
+      const pointers = Array.from(activePointers.values());
+      const currentDistance = Math.hypot(
+        pointers[0].clientX - pointers[1].clientX,
+        pointers[0].clientY - pointers[1].clientY
+      );
+
+      if (initialDistance > 0) {
+        const factor = currentDistance / initialDistance;
+        zoom = Math.max(0.8, Math.min(4, initialZoom * factor));
+        updateTransform();
+      }
+    } else if (activePointers.size === 1 && zoom > 1) {
+      // জুম করা অবস্থায় এক আঙুল দিয়ে প্যান বা সরানো
+      const p = e;
+      const diffX = p.clientX - startX;
+      const diffY = p.clientY - startY;
       panX = initialPanX + diffX;
       panY = initialPanY + diffY;
       updateTransform();
     }
   });
 
-  stage.addEventListener("pointerup", (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    try { stage.releasePointerCapture(e.pointerId); } catch(err){}
+  function handlePointerUp(e) {
+    if (!activePointers.has(e.pointerId)) return;
+    
+    // যদি জুম করা না থাকে এবং ১ আঙুল দিয়ে সোয়াইপ করা হয় তবে পেজ উল্টাবে
+    if (activePointers.size === 1 && zoom === 1) {
+      const p = e;
+      const diffX = p.clientX - startX;
+      const diffY = p.clientY - startY;
+      const minSwipeDist = 25;
 
-    const diffX = e.clientX - startX;
-    const diffY = e.clientY - startY;
-    const minSwipeDist = 35;
-
-    if (zoom === 1 && pageFlip && Math.abs(diffX) > minSwipeDist && Math.abs(diffX) > Math.abs(diffY)) {
-      if (diffX < 0) {
-        pageFlip.flipNext();
-      } else {
-        pageFlip.flipPrev();
+      if (pageFlip && Math.abs(diffX) > minSwipeDist && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX < 0) {
+          pageFlip.flipNext();
+        } else {
+          pageFlip.flipPrev();
+        }
       }
     }
-  });
 
-  stage.addEventListener("pointercancel", () => { isDragging = false; });
+    activePointers.delete(e.pointerId);
+    try { stage.releasePointerCapture(e.pointerId); } catch(err){}
+    if (activePointers.size < 2) {
+      initialDistance = 0;
+    }
+  }
+
+  stage.addEventListener("pointerup", handlePointerUp);
+  stage.addEventListener("pointercancel", (e) => {
+    activePointers.clear();
+  });
 
   document.getElementById("sidePrevBtn").addEventListener("click", (e) => {
     e.stopPropagation();
@@ -546,7 +587,7 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
       const now = audioCtx.currentTime;
-      const duration = 0.28;
+      const duration = 0.2;
       const bufferSize = audioCtx.sampleRate * duration;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -562,14 +603,13 @@
 
       const filter = audioCtx.createBiquadFilter();
       filter.type = "bandpass";
-      filter.frequency.setValueAtTime(1100, now);
-      filter.frequency.exponentialRampToValueAtTime(3400, now + duration * 0.35);
-      filter.frequency.exponentialRampToValueAtTime(750, now + duration);
-      filter.Q.value = 1.6;
+      filter.frequency.setValueAtTime(1200, now);
+      filter.frequency.exponentialRampToValueAtTime(3000, now + duration * 0.3);
+      filter.Q.value = 1.5;
 
       const gain = audioCtx.createGain();
       gain.gain.setValueAtTime(0.01, now);
-      gain.gain.linearRampToValueAtTime(0.45, now + 0.04);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.03);
       gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
       noise.connect(filter);
@@ -618,12 +658,12 @@
   }
 
   document.getElementById("zoomInBtn").addEventListener("click", () => {
-    zoom = Math.min(3.5, zoom + 0.3);
+    zoom = Math.min(4, zoom + 0.4);
     updateTransform();
   });
 
   document.getElementById("zoomOutBtn").addEventListener("click", () => {
-    zoom = Math.max(0.6, zoom - 0.3);
+    zoom = Math.max(0.8, zoom - 0.4);
     updateTransform();
   });
 
@@ -732,7 +772,9 @@
         usePortrait: isMobile,
         mobileScrollSupport: false,
         drawShadow: true,
-        maxShadowOpacity: 0.5
+        maxShadowOpacity: 0.4,
+        swipeDistance: 20,
+        flippingTime: 400
       });
 
       pageFlip.loadFromHTML(document.querySelectorAll(".page"));
@@ -788,7 +830,6 @@
   document.getElementById("nextBtn").addEventListener("click", () => pageFlip.flipNext());
   document.getElementById("lastBtn").addEventListener("click", () => goToPage(totalPages - 1));
 
-  // ইনপুট বক্সে লিখে এন্টার দিলে বা ফোকাস হারালে পাতায় চলে যাবে
   pageInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       pageInput.blur();
