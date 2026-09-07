@@ -7,78 +7,59 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 
 <style>
   :root {
-    --bg: #14121a;
-    --bg-2: #1c1926;
-    --ink: #ece6d8;
-    --muted: #948d9c;
-    --faint: #5f5a68;
-    --paper: #f6efdd;
-    --accent: #c9a24b;
-    --accent-dim: rgba(201, 162, 75, 0.16);
-    --bar-bg: rgba(255,255,255,0.045);
-    --bar-border: rgba(255,255,255,0.09);
-    --radius-lg: 20px;
-    --radius-full: 999px;
+    --bg: #e9eaee;
+    --panel: #ffffff;
+    --ink: #2a2b31;
+    --muted: #7a7c85;
+    --border: #dcdde2;
+    --accent: #2f6fed;
+    --accent-dim: rgba(47, 111, 237, 0.1);
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
 
   body {
-    background: radial-gradient(ellipse 1100px 620px at 50% 30%, var(--bg-2), var(--bg) 72%);
+    background: var(--bg);
     color: var(--ink);
     font-family: "Hind Siliguri", "Inter", sans-serif;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
   }
 
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
   header {
-    padding: 24px 30px 18px;
+    padding: 16px 22px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    justify-content: flex-end;
   }
-
-  .wordmark {
-    font-family: "Fraunces", serif;
-    font-size: 21px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-  }
-  .wordmark span { color: var(--accent); }
 
   #changeBookBtn {
     display: none;
     align-items: center;
     gap: 7px;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.14);
+    background: var(--panel);
+    border: 1px solid var(--border);
     color: var(--muted);
     padding: 8px 16px;
-    border-radius: var(--radius-full);
+    border-radius: 999px;
     font-size: 13px;
     font-family: inherit;
     cursor: pointer;
-    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 0 1px 2px rgba(20,20,30,0.04);
   }
-  #changeBookBtn:hover { color: var(--ink); border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.03); }
+  #changeBookBtn:hover { color: var(--ink); border-color: #c7c9d1; }
   #changeBookBtn svg { width: 15px; height: 15px; }
 
   main {
@@ -87,7 +68,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 28px 14px 36px;
+    padding: 20px 14px 40px;
   }
 
   /* ---------- আপলোড স্ক্রিন ---------- */
@@ -95,56 +76,35 @@
     text-align: center;
     max-width: 400px;
     width: 100%;
-    padding: 52px 40px;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6);
+    padding: 48px 40px;
+    border-radius: 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 45px -25px rgba(20,20,30,0.25);
   }
-
   #uploadScreen .icon-wrap {
-    width: 58px;
-    height: 58px;
-    margin: 0 auto 22px;
-    border-radius: 16px;
+    width: 54px; height: 54px;
+    margin: 0 auto 20px;
+    border-radius: 14px;
     background: var(--accent-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
-  #uploadScreen .icon-wrap svg { width: 27px; height: 27px; color: var(--accent); }
-
-  #uploadScreen h1 {
-    font-family: "Fraunces", serif;
-    font-weight: 600;
-    font-size: 22px;
-    margin: 0 0 10px;
-    letter-spacing: 0.1px;
-  }
-
-  #uploadScreen p {
-    color: var(--muted);
-    font-size: 14px;
-    margin: 0 0 28px;
-    line-height: 1.7;
-  }
+  #uploadScreen .icon-wrap svg { width: 25px; height: 25px; color: var(--accent); }
+  #uploadScreen h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+  #uploadScreen p { color: var(--muted); font-size: 14px; margin: 0 0 26px; line-height: 1.7; }
 
   .pick-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
+    display: inline-flex; align-items: center; gap: 9px;
     background: var(--accent);
-    color: #201705;
+    color: #fff;
     font-weight: 500;
     font-size: 15px;
-    padding: 13px 30px;
-    border-radius: var(--radius-full);
+    padding: 12px 28px;
+    border-radius: 999px;
     cursor: pointer;
-    box-shadow: 0 12px 24px -10px rgba(201, 162, 75, 0.45);
-    transition: filter 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 10px 22px -10px rgba(47,111,237,0.55);
   }
-  .pick-btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
-  .pick-btn:active { transform: translateY(0); }
+  .pick-btn:hover { filter: brightness(1.05); }
   .pick-btn svg { width: 17px; height: 17px; }
   #pdfInput { display: none; }
 
@@ -152,25 +112,16 @@
   #readerArea {
     display: none;
     width: 100%;
-    max-width: 1180px;
+    max-width: 1100px;
     flex-direction: column;
     align-items: center;
-    opacity: 0;
-    transform: translateY(10px);
   }
-  #readerArea.active {
-    display: flex;
-    animation: rise 0.5s ease forwards;
-  }
-  @keyframes rise {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  #readerArea:fullscreen,
-  #readerArea:-webkit-full-screen {
+  #readerArea.active { display: flex; }
+  #readerArea:fullscreen, #readerArea:-webkit-full-screen {
     background: var(--bg);
     justify-content: center;
     padding: 24px;
+    overflow: auto;
   }
 
   #stage {
@@ -178,17 +129,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
-  }
-
-  #stage::before {
-    content: "";
-    position: absolute;
-    left: 50%; bottom: -28px;
-    width: 58%; height: 38px;
-    transform: translateX(-50%);
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), transparent 72%);
-    filter: blur(3px);
-    pointer-events: none;
   }
 
   #loading { display: none; margin: 90px 0; text-align: center; color: var(--muted); font-size: 14.5px; }
@@ -202,110 +142,125 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  #bookWrap {
-    width: 100%;
-    max-width: 1000px;
-    transform-origin: top center;
-    transition: transform 0.18s ease;
+  /* বইয়ের নিচে হালকা ছায়া, টেবিলে রাখা কাগজের মতো */
+  #bookShadow {
+    position: relative;
+    margin: 0 auto;
   }
-  #book { width: 100%; display: none; }
-  .page { background: var(--paper); }
+  #bookShadow::after {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: -18px;
+    width: 55%; height: 26px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(20,20,30,0.22), transparent 72%);
+    filter: blur(2px);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  #bookWrap {
+    margin: 0 auto;
+    transform-origin: top center;
+  }
+  #book { display: none; margin: 0 auto; }
+  .page { background: #ffffff; }
   .page canvas { width: 100%; height: 100%; display: block; }
 
+  /* বইয়ের পাশে ‹ › তীরচিহ্ন, অ্যাসসুন্নাহর মতো */
+  .edge-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgba(20,20,30,0.3);
+    z-index: 5;
+  }
+  .edge-arrow:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+  .edge-arrow:disabled { opacity: 0.35; cursor: default; }
+  .edge-arrow svg { width: 18px; height: 18px; }
+  #edgePrev { left: -8px; }
+  #edgeNext { right: -8px; }
+
+  @media (max-width: 720px) {
+    .edge-arrow { display: none; } /* মোবাইলে সোয়াইপ/বাটন দিয়েই পাতা ওল্টানো সহজ */
+  }
+
+  /* ---------- টুলবার ---------- */
   #controls {
     display: none;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 46px;
-  }
-  #controls.active { display: flex; }
-
-  .btn-group {
-    display: flex;
     align-items: center;
     gap: 2px;
+    margin-top: 26px;
     padding: 6px;
-    border-radius: var(--radius-full);
-    background: var(--bar-bg);
-    border: 1px solid var(--bar-border);
-    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 24px -16px rgba(20,20,30,0.25);
   }
+  #controls.active { display: flex; }
 
   .icon-btn {
     width: 38px; height: 38px;
     border-radius: 50%;
     border: none;
     background: transparent;
-    color: var(--ink);
+    color: var(--muted);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s ease, color 0.15s ease;
   }
   .icon-btn svg { width: 17px; height: 17px; }
   .icon-btn:hover:not(:disabled) { background: var(--accent-dim); color: var(--accent); }
-  .icon-btn:disabled { opacity: 0.28; cursor: default; }
+  .icon-btn:disabled { opacity: 0.3; cursor: default; }
 
-  .divider {
-    width: 1px;
-    height: 20px;
-    background: rgba(255,255,255,0.1);
-    margin: 0 4px;
-  }
+  .divider { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
 
   .page-jump {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 10px;
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 8px;
     font-size: 13.5px;
     color: var(--muted);
   }
   #pageInput {
-    width: 38px;
-    text-align: center;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.14);
+    width: 38px; text-align: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 7px;
     color: var(--ink);
     font-size: 13.5px;
     font-family: inherit;
     padding: 5px 2px;
   }
-  #pageInput::-webkit-outer-spin-button,
-  #pageInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #pageInput::-webkit-outer-spin-button, #pageInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
   #errorBox {
     display: none;
     max-width: 420px;
-    margin: 28px auto 0;
-    padding: 15px 20px;
+    margin: 24px auto 0;
+    padding: 14px 20px;
     border-radius: 12px;
-    background: rgba(220, 90, 70, 0.1);
-    border: 1px solid rgba(220, 90, 70, 0.3);
-    color: #e8b9ae;
+    background: #fdecea;
+    border: 1px solid #f3c6c1;
+    color: #8a2f27;
     font-size: 13.5px;
     text-align: center;
     line-height: 1.6;
   }
 
-  @media (max-width: 640px) {
-    #bookWrap { max-width: 100%; }
-    header { padding: 20px 18px 16px; }
-    #uploadScreen { padding: 42px 26px; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     #loading .spinner { animation: none; border-top-color: var(--accent-dim); }
-    #readerArea.active { animation: none; opacity: 1; transform: none; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="wordmark">পাঠ<span>ঘর</span></div>
   <button id="changeBookBtn">
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a6 6 0 1 1 1.8 4.3M4 10V6m0 4h4"/></svg>
     নতুন PDF খুলুন
@@ -335,43 +290,51 @@
         <div class="spinner"></div>
         বই খোলা হচ্ছে...
       </div>
-      <div id="bookWrap">
-        <div id="book"></div>
+
+      <button class="edge-arrow" id="edgePrev" title="আগের পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 5 7.5 10l5 5"/></svg>
+      </button>
+
+      <div id="bookShadow">
+        <div id="bookWrap"><div id="book"></div></div>
       </div>
+
+      <button class="edge-arrow" id="edgeNext" title="পরের পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 5l5 5-5 5"/></svg>
+      </button>
     </div>
 
     <div id="controls">
-      <div class="btn-group">
-        <button class="icon-btn" id="firstBtn" title="প্রথম পাতা">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5 4.5 10l5 5M15.5 5v10"/></svg>
-        </button>
-        <button class="icon-btn" id="prevBtn" title="আগের পাতা">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 5 7.5 10l5 5"/></svg>
-        </button>
-        <div class="page-jump">
-          <input type="number" id="pageInput" min="1" value="1" aria-label="পাতা নম্বর" />
-          <span id="totalPages">/ ১</span>
-        </div>
-        <button class="icon-btn" id="nextBtn" title="পরের পাতা">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 5l5 5-5 5"/></svg>
-        </button>
-        <button class="icon-btn" id="lastBtn" title="শেষ পাতা">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 5l5 5-5 5M4.5 5v10"/></svg>
-        </button>
+      <button class="icon-btn" id="zoomOutBtn" title="জুম আউট">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8M6 8.5h5"/></svg>
+      </button>
+      <button class="icon-btn" id="zoomInBtn" title="জুম ইন">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8M8.5 6v5M6 8.5h5"/></svg>
+      </button>
+      <div class="divider"></div>
+      <button class="icon-btn" id="firstBtn" title="প্রথম পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5 4.5 10l5 5M15.5 5v10"/></svg>
+      </button>
+      <button class="icon-btn" id="prevBtn" title="আগের পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 5 7.5 10l5 5"/></svg>
+      </button>
+      <div class="page-jump">
+        <input type="number" id="pageInput" min="1" value="1" aria-label="পাতা নম্বর" />
+        <span id="totalPages">/ ১</span>
       </div>
-
-      <div class="btn-group">
-        <button class="icon-btn" id="zoomOutBtn" title="জুম আউট">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8M6 8.5h5"/></svg>
-        </button>
-        <button class="icon-btn" id="zoomInBtn" title="জুম ইন">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8M8.5 6v5M6 8.5h5"/></svg>
-        </button>
-        <div class="divider"></div>
-        <button class="icon-btn" id="fullscreenBtn" title="ফুল-স্ক্রিন">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3H4a1 1 0 0 0-1 1v3M13 3h3a1 1 0 0 1 1 1v3M17 13v3a1 1 0 0 1-1 1h-3M3 13v3a1 1 0 0 0 1 1h3"/></svg>
-        </button>
-      </div>
+      <button class="icon-btn" id="nextBtn" title="পরের পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 5l5 5-5 5"/></svg>
+      </button>
+      <button class="icon-btn" id="lastBtn" title="শেষ পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 5l5 5-5 5M4.5 5v10"/></svg>
+      </button>
+      <div class="divider"></div>
+      <button class="icon-btn" id="muteBtn" title="সাউন্ড বন্ধ/চালু">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h2.5L10 4.5v11L6.5 12.5H4v-5Z"/><path d="M13 7.5c1 .9 1 4.1 0 5"/></svg>
+      </button>
+      <button class="icon-btn" id="fullscreenBtn" title="ফুল-স্ক্রিন">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3H4a1 1 0 0 0-1 1v3M13 3h3a1 1 0 0 1 1 1v3M17 13v3a1 1 0 0 1-1 1h-3M3 13v3a1 1 0 0 0 1 1h3"/></svg>
+      </button>
     </div>
   </div>
 
@@ -386,28 +349,74 @@
   const toBn = (n) => String(n).split("").map(d => bnDigits[d] ?? d).join("");
   const toEnDigits = (s) => String(s).replace(/[০-৯]/g, (d) => bnDigits.indexOf(d));
 
-  const uploadScreen   = document.getElementById("uploadScreen");
-  const readerArea     = document.getElementById("readerArea");
-  const loadingEl      = document.getElementById("loading");
-  const bookWrap       = document.getElementById("bookWrap");
-  const bookEl         = document.getElementById("book");
-  const controlsEl     = document.getElementById("controls");
-  const errorBox       = document.getElementById("errorBox");
-  const changeBookBtn  = document.getElementById("changeBookBtn");
-  const pageInput      = document.getElementById("pageInput");
-  const totalPagesLbl  = document.getElementById("totalPages");
+  const uploadScreen  = document.getElementById("uploadScreen");
+  const readerArea    = document.getElementById("readerArea");
+  const stage         = document.getElementById("stage");
+  const loadingEl     = document.getElementById("loading");
+  const bookWrap      = document.getElementById("bookWrap");
+  const bookEl        = document.getElementById("book");
+  const controlsEl    = document.getElementById("controls");
+  const errorBox      = document.getElementById("errorBox");
+  const changeBookBtn = document.getElementById("changeBookBtn");
+  const pageInput     = document.getElementById("pageInput");
+  const totalPagesLbl = document.getElementById("totalPages");
+  const edgePrev      = document.getElementById("edgePrev");
+  const edgeNext      = document.getElementById("edgeNext");
+  const muteBtn       = document.getElementById("muteBtn");
 
   let pageFlip;
   let totalPages = 0;
   let zoom = 1;
+  let isMuted = false;
 
+  // ---------------- পাতা ওল্টানোর সাউন্ড (কোনো ফাইল ছাড়াই, কোডে তৈরি) ----------------
+  let audioCtx;
+  function playFlipSound() {
+    if (isMuted) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const duration = 0.22;
+      const bufferSize = audioCtx.sampleRate * duration;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(1800, audioCtx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + duration);
+      filter.Q.value = 0.8;
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+      noise.connect(filter).connect(gain).connect(audioCtx.destination);
+      noise.start();
+    } catch (e) { /* সাইলেন্টলি ইগনোর করা হচ্ছে, সাউন্ড ছাড়া বইপড়া তো চলবেই */ }
+  }
+
+  muteBtn.addEventListener("click", () => {
+    isMuted = !isMuted;
+    muteBtn.style.opacity = isMuted ? 0.4 : 1;
+  });
+
+  // ---------------- পাতা নম্বর, নেভিগেশন ----------------
   function updateCounter(current) {
     pageInput.value = current + 1;
     totalPagesLbl.textContent = `/ ${toBn(totalPages)}`;
-    document.getElementById("firstBtn").disabled = current === 0;
-    document.getElementById("prevBtn").disabled = current === 0;
-    document.getElementById("nextBtn").disabled = current === totalPages - 1;
-    document.getElementById("lastBtn").disabled = current === totalPages - 1;
+    const atStart = current === 0;
+    const atEnd = current === totalPages - 1;
+    document.getElementById("firstBtn").disabled = atStart;
+    document.getElementById("prevBtn").disabled = atStart;
+    edgePrev.disabled = atStart;
+    document.getElementById("nextBtn").disabled = atEnd;
+    document.getElementById("lastBtn").disabled = atEnd;
+    edgeNext.disabled = atEnd;
   }
 
   function goToPage(index) {
@@ -416,10 +425,52 @@
     updateCounter(clamped);
   }
 
+  // ---------------- জুম: বাটন + মাউস হুইল + পিঞ্চ, কোনো সীমা ছাড়াই স্বাধীনভাবে ----------------
+  const ZOOM_MIN = 0.4;
+  const ZOOM_MAX = 4;
+
   function applyZoom() {
     bookWrap.style.transform = `scale(${zoom})`;
   }
 
+  function setZoom(newZoom) {
+    zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
+    applyZoom();
+  }
+
+  document.getElementById("zoomOutBtn").addEventListener("click", () => setZoom(zoom - 0.2));
+  document.getElementById("zoomInBtn").addEventListener("click", () => setZoom(zoom + 0.2));
+
+  stage.addEventListener("wheel", (e) => {
+    if (!bookEl.style.display || bookEl.style.display === "none") return;
+    e.preventDefault();
+    setZoom(zoom - e.deltaY * 0.0015);
+  }, { passive: false });
+
+  // দুই আঙুলে পিঞ্চ (মোবাইল)
+  let pinchStartDist = null;
+  let pinchStartZoom = 1;
+  function touchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+  }
+  stage.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      pinchStartDist = touchDistance(e.touches);
+      pinchStartZoom = zoom;
+    }
+  }, { passive: true });
+  stage.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2 && pinchStartDist) {
+      e.preventDefault();
+      const newDist = touchDistance(e.touches);
+      setZoom(pinchStartZoom * (newDist / pinchStartDist));
+    }
+  }, { passive: false });
+  stage.addEventListener("touchend", () => { pinchStartDist = null; });
+
+  // ---------------- ফাইল খোলা ----------------
   function showError(message) {
     loadingEl.classList.remove("active");
     errorBox.textContent = message;
@@ -474,7 +525,7 @@
       const firstPage = await pdf.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
       const aspect = baseViewport.height / baseViewport.width;
-      const baseWidth = 480;
+      const baseWidth = 460;
       const baseHeight = Math.round(baseWidth * aspect);
 
       pageFlip = new St.PageFlip(bookEl, {
@@ -482,9 +533,9 @@
         height: baseHeight,
         size: "stretch",
         minWidth: 260,
-        maxWidth: 700,
+        maxWidth: 680,
         minHeight: Math.round(260 * aspect),
-        maxHeight: Math.round(700 * aspect),
+        maxHeight: Math.round(680 * aspect),
         showCover: true,
         usePortrait: true,
         mobileScrollSupport: true,
@@ -493,7 +544,10 @@
       });
 
       pageFlip.loadFromHTML(document.querySelectorAll(".page"));
-      pageFlip.on("flip", (e) => updateCounter(e.data));
+      pageFlip.on("flip", (e) => {
+        updateCounter(e.data);
+        playFlipSound();
+      });
       updateCounter(0);
     } catch (err) {
       showError("বইটা খোলা যায়নি। ফাইলটা ঠিকঠাক PDF কিনা যাচাই করুন। (" + err.message + ")");
@@ -512,19 +566,12 @@
   document.getElementById("prevBtn").addEventListener("click", () => pageFlip.flipPrev());
   document.getElementById("nextBtn").addEventListener("click", () => pageFlip.flipNext());
   document.getElementById("lastBtn").addEventListener("click", () => goToPage(totalPages - 1));
+  edgePrev.addEventListener("click", () => pageFlip.flipPrev());
+  edgeNext.addEventListener("click", () => pageFlip.flipNext());
 
   pageInput.addEventListener("change", () => {
     const n = parseInt(toEnDigits(pageInput.value), 10);
     if (!isNaN(n)) goToPage(n - 1);
-  });
-
-  document.getElementById("zoomOutBtn").addEventListener("click", () => {
-    zoom = Math.max(0.6, +(zoom - 0.15).toFixed(2));
-    applyZoom();
-  });
-  document.getElementById("zoomInBtn").addEventListener("click", () => {
-    zoom = Math.min(1.8, +(zoom + 0.15).toFixed(2));
-    applyZoom();
   });
 
   document.getElementById("fullscreenBtn").addEventListener("click", () => {
