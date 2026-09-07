@@ -21,13 +21,15 @@
     --paper: #f6efdd;
     --accent: #c9a24b;
     --accent-dim: rgba(201, 162, 75, 0.18);
+    --bar-bg: rgba(255,255,255,0.045);
+    --bar-border: rgba(255,255,255,0.08);
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
 
   body {
-    background: radial-gradient(ellipse 900px 500px at 50% 38%, var(--bg-2), var(--bg) 70%);
+    background: radial-gradient(ellipse 1100px 600px at 50% 32%, var(--bg-2), var(--bg) 70%);
     color: var(--ink);
     font-family: "Hind Siliguri", "Inter", sans-serif;
     min-height: 100vh;
@@ -37,7 +39,7 @@
   }
 
   header {
-    padding: 28px 32px 0;
+    padding: 22px 28px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -45,7 +47,7 @@
 
   .wordmark {
     font-family: "Fraunces", serif;
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 600;
     letter-spacing: 0.3px;
   }
@@ -70,7 +72,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 16px 40px;
+    padding: 16px 12px 30px;
   }
 
   /* ---------- আপলোড স্ক্রিন ---------- */
@@ -82,27 +84,9 @@
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
   }
-
-  #uploadScreen .icon {
-    width: 46px;
-    height: 46px;
-    margin: 0 auto 18px;
-    color: var(--accent);
-  }
-
-  #uploadScreen h1 {
-    font-family: "Fraunces", serif;
-    font-weight: 600;
-    font-size: 21px;
-    margin: 0 0 8px;
-  }
-
-  #uploadScreen p {
-    color: var(--muted);
-    font-size: 14px;
-    margin: 0 0 24px;
-    line-height: 1.6;
-  }
+  #uploadScreen .icon { width: 46px; height: 46px; margin: 0 auto 18px; color: var(--accent); }
+  #uploadScreen h1 { font-family: "Fraunces", serif; font-weight: 600; font-size: 21px; margin: 0 0 8px; }
+  #uploadScreen p { color: var(--muted); font-size: 14px; margin: 0 0 24px; line-height: 1.6; }
 
   .pick-btn {
     display: inline-block;
@@ -118,23 +102,43 @@
   .pick-btn:hover { filter: brightness(1.08); }
   #pdfInput { display: none; }
 
-  /* ---------- স্টেজ ---------- */
-  #stage { position: relative; display: none; justify-content: center; }
-  #stage.active { display: flex; }
+  /* ---------- রিডার এলাকা ---------- */
+  #readerArea {
+    display: none;
+    width: 100%;
+    max-width: 1180px;
+    flex-direction: column;
+    align-items: center;
+  }
+  #readerArea.active { display: flex; }
+
+  #readerArea:fullscreen,
+  #readerArea:-webkit-full-screen {
+    background: var(--bg);
+    justify-content: center;
+    padding: 20px;
+  }
+
+  #stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
   #stage::before {
     content: "";
     position: absolute;
-    left: 50%; bottom: -30px;
-    width: 70%; height: 40px;
+    left: 50%; bottom: -26px;
+    width: 60%; height: 36px;
     transform: translateX(-50%);
     background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), transparent 72%);
     filter: blur(2px);
+    pointer-events: none;
   }
 
   #loading { display: none; margin: 80px 0; text-align: center; color: var(--muted); font-size: 15px; }
   #loading.active { display: block; }
-
   #loading .spinner {
     width: 26px; height: 26px; margin: 0 auto 14px;
     border-radius: 50%;
@@ -144,44 +148,74 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  #book { display: none; }
+  /* বইয়ের প্রকৃত সাইজ এখানে নির্ধারিত হয় — পুরো readerArea-এর প্রস্থ ব্যবহার করে */
+  #bookWrap {
+    width: 100%;
+    max-width: 1000px;
+    transform-origin: top center;
+    transition: transform 0.15s ease;
+  }
+  #book { width: 100%; display: none; }
   .page { background: var(--paper); }
   .page canvas { width: 100%; height: 100%; display: block; }
 
   #controls {
     display: none;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
-    margin-top: 34px;
-    padding: 8px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.045);
-    border: 1px solid rgba(255,255,255,0.07);
-    backdrop-filter: blur(6px);
+    justify-content: center;
+    gap: 10px;
+    margin-top: 40px;
   }
   #controls.active { display: flex; }
 
-  .nav-btn {
-    width: 40px; height: 40px;
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 6px;
+    border-radius: 999px;
+    background: var(--bar-bg);
+    border: 1px solid var(--bar-border);
+    backdrop-filter: blur(6px);
+  }
+
+  .icon-btn {
+    width: 38px; height: 38px;
     border-radius: 50%;
     border: none;
     background: transparent;
     color: var(--ink);
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 1;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s ease, color 0.15s ease;
   }
-  .nav-btn:hover { background: var(--accent-dim); color: var(--accent); }
-  .nav-btn:disabled { opacity: 0.3; cursor: default; background: none; color: var(--ink); }
+  .icon-btn:hover { background: var(--accent-dim); color: var(--accent); }
+  .icon-btn:disabled { opacity: 0.3; cursor: default; background: none; color: var(--ink); }
 
-  #pageCounter {
-    min-width: 84px;
-    text-align: center;
-    font-size: 14px;
+  .page-jump {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    font-size: 13.5px;
     color: var(--muted);
-    font-variant-numeric: tabular-nums;
   }
+  #pageInput {
+    width: 40px;
+    text-align: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    color: var(--ink);
+    font-size: 13.5px;
+    font-family: inherit;
+    padding: 4px 2px;
+  }
+  #pageInput::-webkit-outer-spin-button,
+  #pageInput::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
   #errorBox {
     display: none;
@@ -194,6 +228,10 @@
     color: #e8b9ae;
     font-size: 13.5px;
     text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    #bookWrap { max-width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -210,7 +248,6 @@
 
 <main>
 
-  <!-- ধাপ ১: ব্যবহারকারী নিজে PDF বেছে নেবে -->
   <div id="uploadScreen">
     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
       <path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke-linecap="round" stroke-linejoin="round"/>
@@ -221,19 +258,35 @@
     <input type="file" id="pdfInput" accept="application/pdf,.pdf" />
   </div>
 
-  <!-- ধাপ ২: বই -->
-  <div id="stage">
-    <div id="loading">
-      <div class="spinner"></div>
-      বই খোলা হচ্ছে...
+  <div id="readerArea">
+    <div id="stage">
+      <div id="loading">
+        <div class="spinner"></div>
+        বই খোলা হচ্ছে...
+      </div>
+      <div id="bookWrap">
+        <div id="book"></div>
+      </div>
     </div>
-    <div id="book"></div>
-  </div>
 
-  <div id="controls">
-    <button class="nav-btn" id="prevBtn" aria-label="আগের পাতা">‹</button>
-    <div id="pageCounter">১ / ১</div>
-    <button class="nav-btn" id="nextBtn" aria-label="পরের পাতা">›</button>
+    <div id="controls">
+      <div class="btn-group">
+        <button class="icon-btn" id="firstBtn" title="প্রথম পাতা">⏮</button>
+        <button class="icon-btn" id="prevBtn" title="আগের পাতা">‹</button>
+        <div class="page-jump">
+          <input type="number" id="pageInput" min="1" value="1" />
+          <span id="totalPages">/ ১</span>
+        </div>
+        <button class="icon-btn" id="nextBtn" title="পরের পাতা">›</button>
+        <button class="icon-btn" id="lastBtn" title="শেষ পাতা">⏭</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="icon-btn" id="zoomOutBtn" title="জুম আউট">−</button>
+        <button class="icon-btn" id="zoomInBtn" title="জুম ইন">+</button>
+        <button class="icon-btn" id="fullscreenBtn" title="ফুল-স্ক্রিন">⛶</button>
+      </div>
+    </div>
   </div>
 
   <div id="errorBox"></div>
@@ -245,22 +298,40 @@
 
   const bnDigits = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
   const toBn = (n) => String(n).split("").map(d => bnDigits[d] ?? d).join("");
+  const toEnDigits = (s) => String(s).replace(/[০-৯]/g, (d) => bnDigits.indexOf(d));
 
-  const uploadScreen = document.getElementById("uploadScreen");
-  const stage = document.getElementById("stage");
-  const loadingEl = document.getElementById("loading");
-  const bookEl = document.getElementById("book");
-  const controlsEl = document.getElementById("controls");
-  const errorBox = document.getElementById("errorBox");
-  const changeBookBtn = document.getElementById("changeBookBtn");
+  const uploadScreen   = document.getElementById("uploadScreen");
+  const readerArea     = document.getElementById("readerArea");
+  const loadingEl      = document.getElementById("loading");
+  const bookWrap       = document.getElementById("bookWrap");
+  const bookEl         = document.getElementById("book");
+  const controlsEl     = document.getElementById("controls");
+  const errorBox       = document.getElementById("errorBox");
+  const changeBookBtn  = document.getElementById("changeBookBtn");
+  const pageInput      = document.getElementById("pageInput");
+  const totalPagesLbl  = document.getElementById("totalPages");
 
   let pageFlip;
   let totalPages = 0;
+  let zoom = 1;
 
   function updateCounter(current) {
-    document.getElementById("pageCounter").textContent = `${toBn(current + 1)} / ${toBn(totalPages)}`;
+    pageInput.value = current + 1;
+    totalPagesLbl.textContent = `/ ${toBn(totalPages)}`;
+    document.getElementById("firstBtn").disabled = current === 0;
     document.getElementById("prevBtn").disabled = current === 0;
     document.getElementById("nextBtn").disabled = current === totalPages - 1;
+    document.getElementById("lastBtn").disabled = current === totalPages - 1;
+  }
+
+  function goToPage(index) {
+    const clamped = Math.max(0, Math.min(totalPages - 1, index));
+    pageFlip.turnToPage(clamped);
+    updateCounter(clamped);
+  }
+
+  function applyZoom() {
+    bookWrap.style.transform = `scale(${zoom})`;
   }
 
   function showError(message) {
@@ -271,18 +342,20 @@
 
   function resetToUpload() {
     uploadScreen.style.display = "block";
-    stage.classList.remove("active");
+    readerArea.classList.remove("active");
     controlsEl.classList.remove("active");
     changeBookBtn.style.display = "none";
     errorBox.style.display = "none";
     bookEl.innerHTML = "";
     bookEl.style.display = "none";
+    zoom = 1;
+    applyZoom();
     document.getElementById("pdfInput").value = "";
   }
 
   async function openPDF(file) {
     uploadScreen.style.display = "none";
-    stage.classList.add("active");
+    readerArea.classList.add("active");
     loadingEl.classList.add("active");
     errorBox.style.display = "none";
 
@@ -293,7 +366,7 @@
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 });
+        const viewport = page.getViewport({ scale: 2 });
 
         const canvas = document.createElement("canvas");
         canvas.width = viewport.width;
@@ -312,15 +385,25 @@
       controlsEl.classList.add("active");
       changeBookBtn.style.display = "inline-block";
 
+      // প্রথম পাতার আকার (উচ্চতা/প্রস্থ অনুপাত) থেকে বইয়ের base সাইজ ঠিক করা হচ্ছে
+      const firstPage = await pdf.getPage(1);
+      const baseViewport = firstPage.getViewport({ scale: 1 });
+      const aspect = baseViewport.height / baseViewport.width;
+      const baseWidth = 480;
+      const baseHeight = Math.round(baseWidth * aspect);
+
+      // bookWrap-কে একটা নির্দিষ্ট প্রস্থ দেওয়া হচ্ছে, যাতে "stretch" মোড সঠিক জায়গা মেপে
+      // বড় স্ক্রিনে দুই-পাতা (spread) আর ছোট স্ক্রিনে এক-পাতা মোড বেছে নিতে পারে
       pageFlip = new St.PageFlip(bookEl, {
-        width: 420,
-        height: 580,
+        width: baseWidth,
+        height: baseHeight,
         size: "stretch",
         minWidth: 260,
-        maxWidth: 900,
-        minHeight: 360,
-        maxHeight: 1200,
+        maxWidth: 700,
+        minHeight: Math.round(260 * aspect),
+        maxHeight: Math.round(700 * aspect),
         showCover: true,
+        usePortrait: true,
         mobileScrollSupport: true,
         drawShadow: true,
         maxShadowOpacity: 0.5,
@@ -341,8 +424,33 @@
   });
 
   changeBookBtn.addEventListener("click", resetToUpload);
+
+  document.getElementById("firstBtn").addEventListener("click", () => goToPage(0));
   document.getElementById("prevBtn").addEventListener("click", () => pageFlip.flipPrev());
   document.getElementById("nextBtn").addEventListener("click", () => pageFlip.flipNext());
+  document.getElementById("lastBtn").addEventListener("click", () => goToPage(totalPages - 1));
+
+  pageInput.addEventListener("change", () => {
+    const n = parseInt(toEnDigits(pageInput.value), 10);
+    if (!isNaN(n)) goToPage(n - 1);
+  });
+
+  document.getElementById("zoomOutBtn").addEventListener("click", () => {
+    zoom = Math.max(0.6, +(zoom - 0.15).toFixed(2));
+    applyZoom();
+  });
+  document.getElementById("zoomInBtn").addEventListener("click", () => {
+    zoom = Math.min(1.8, +(zoom + 0.15).toFixed(2));
+    applyZoom();
+  });
+
+  document.getElementById("fullscreenBtn").addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      readerArea.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  });
 </script>
 
 </body>
