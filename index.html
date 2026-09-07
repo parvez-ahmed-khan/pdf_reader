@@ -147,11 +147,39 @@
     justify-content: center;
     overflow: hidden;
     touch-action: none;
-    -ms-touch-action: none;
-    overscroll-behavior: none;
     cursor: grab;
   }
   #stage:active { cursor: grabbing; }
+
+  /* সাইড অ্যারো বাটন */
+  .side-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(28, 25, 38, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 25;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    opacity: 0.7;
+  }
+  .side-nav-btn:hover {
+    opacity: 1;
+    background: var(--accent);
+    color: #1a1202;
+    border-color: var(--accent);
+  }
+  .side-nav-btn.left { left: 14px; }
+  .side-nav-btn.right { right: 14px; }
+  .side-nav-btn svg { width: 22px; height: 22px; }
 
   #loading { display: none; text-align: center; color: var(--muted); font-size: 14px; }
   #loading.active { display: block; }
@@ -268,6 +296,9 @@
     .icon-btn svg { width: 14px; height: 14px; }
     #pageInput { width: 30px; font-size: 12px; }
     .page-jump { font-size: 11.5px; padding: 0 2px; }
+    .side-nav-btn { width: 36px; height: 36px; }
+    .side-nav-btn.left { left: 6px; }
+    .side-nav-btn.right { right: 6px; }
   }
 </style>
 </head>
@@ -298,6 +329,13 @@
 
   <div id="readerArea">
     <div id="stage">
+      <button id="sidePrevBtn" class="side-nav-btn left" title="আগের পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.5 5 7.5 10l5 5"/></svg>
+      </button>
+      <button id="sideNextBtn" class="side-nav-btn right" title="পরের পাতা">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.5 5l5 5-5 5"/></svg>
+      </button>
+
       <div id="loading">
         <div class="spinner"></div>
         বই প্রসেসিং করা হচ্ছে...
@@ -404,150 +442,67 @@
     updateTransform();
   }
 
-  // ---------------- টাচ, সোয়াইপ ও ড্রাগ লজিক ----------------
+  // ---------------- ড্রাগ ও প্যান লজিক ----------------
   let startX = 0, startY = 0;
   let initialPanX = 0, initialPanY = 0;
   let isDragging = false;
-  let gestureWasZoomed = false;
-  let gestureCanFlip = false;
-  let activePointerId = null;
 
-  // Zoom অবস্থায় শুধু দৃশ্যমান বইয়ের ৪টি ছোট corner hit-zone থেকে page swipe হবে।
-  function isInBookCorner(x, y) {
-    const rect = bookWrap.getBoundingClientRect();
-    if (!rect.width || !rect.height) return false;
-
-    const cornerSize = Math.min(90, Math.max(48, Math.min(rect.width, rect.height) * 0.18));
-
-    const left   = x >= rect.left && x <= rect.left + cornerSize;
-    const right  = x <= rect.right && x >= rect.right - cornerSize;
-    const top    = y >= rect.top && y <= rect.top + cornerSize;
-    const bottom = y <= rect.bottom && y >= rect.bottom - cornerSize;
-
-    return (left || right) && (top || bottom);
-  }
-
-  // ------------------------------------------------------------
-  // NORMAL MODE (zoom == 1): normal left/right swipe = page flip
-  // ------------------------------------------------------------
   stage.addEventListener("pointerdown", (e) => {
-    if (e.target.closest("#controls")) return;
-    if (zoom > 1.0001) return; // zoom mode is handled below at document capture level
-
+    if (e.target.closest("#controls") || e.target.closest(".side-nav-btn")) return;
     isDragging = true;
-    activePointerId = e.pointerId;
-    startX = e.clientX;
-    startY = e.clientY;
-
-    try { stage.setPointerCapture(e.pointerId); } catch(err) {}
-  });
-
-  stage.addEventListener("pointerup", (e) => {
-    if (!isDragging || e.pointerId !== activePointerId || zoom > 1.0001) return;
-
-    const diffX = e.clientX - startX;
-    const diffY = e.clientY - startY;
-    const horizontalSwipe =
-      Math.abs(diffX) > 45 &&
-      Math.abs(diffX) > Math.abs(diffY) * 1.15;
-
-    isDragging = false;
-    activePointerId = null;
-    try { stage.releasePointerCapture(e.pointerId); } catch(err) {}
-
-    if (horizontalSwipe && pageFlip) {
-      if (diffX < 0) pageFlip.flipNext();
-      else pageFlip.flipPrev();
-    }
-  });
-
-  stage.addEventListener("pointercancel", (e) => {
-    if (e.pointerId === activePointerId) {
-      isDragging = false;
-      activePointerId = null;
-    }
-  });
-
-  // ------------------------------------------------------------
-  // ZOOM MODE: capture at DOCUMENT level so PageFlip cannot steal it.
-  // Non-corner = PAN ONLY. Corner + horizontal swipe = PAGE FLIP.
-  // ------------------------------------------------------------
-  document.addEventListener("pointerdown", (e) => {
-    if (zoom <= 1.0001) return;
-    if (!stage.contains(e.target)) return;
-    if (e.target.closest("#controls")) return;
-
-    gestureWasZoomed = true;
-    gestureCanFlip = isInBookCorner(e.clientX, e.clientY);
-    isDragging = true;
-    activePointerId = e.pointerId;
     startX = e.clientX;
     startY = e.clientY;
     initialPanX = panX;
     initialPanY = panY;
 
-    // Prevent the PageFlip library / browser from receiving this gesture.
-    e.preventDefault();
-    e.stopPropagation();
-    try { stage.setPointerCapture(e.pointerId); } catch(err) {}
-  }, true);
+    try { stage.setPointerCapture(e.pointerId); } catch(err){}
+  });
 
-  document.addEventListener("pointermove", (e) => {
-    if (!gestureWasZoomed || !isDragging || e.pointerId !== activePointerId) return;
-
+  stage.addEventListener("pointermove", (e) => {
+    if (!isDragging) return;
     const diffX = e.clientX - startX;
     const diffY = e.clientY - startY;
 
-    // Every zoomed drag pans, including a corner drag.
-    panX = initialPanX + diffX;
-    panY = initialPanY + diffY;
-    updateTransform();
-
-    // Keep PageFlip/browser gesture handling out of the zoom interaction.
-    e.preventDefault();
-    e.stopPropagation();
-  }, true);
-
-  document.addEventListener("pointerup", (e) => {
-    if (!gestureWasZoomed || !isDragging || e.pointerId !== activePointerId) return;
-
-    const diffX = e.clientX - startX;
-    const diffY = e.clientY - startY;
-    const horizontalSwipe =
-      Math.abs(diffX) > 45 &&
-      Math.abs(diffX) > Math.abs(diffY) * 1.15;
-
-    const shouldFlip = gestureCanFlip && horizontalSwipe && pageFlip;
-
-    // Clear gesture state BEFORE calling pageFlip/resetView.
-    isDragging = false;
-    activePointerId = null;
-    gestureWasZoomed = false;
-    gestureCanFlip = false;
-    try { stage.releasePointerCapture(e.pointerId); } catch(err) {}
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (shouldFlip) {
-      if (diffX < 0) pageFlip.flipNext();
-      else pageFlip.flipPrev();
-
-      // Only a real corner swipe is allowed to reset after the page flip.
-      setTimeout(() => resetView(), 300);
+    if (zoom > 1) {
+      panX = initialPanX + diffX;
+      panY = initialPanY + diffY;
+      updateTransform();
     }
-  }, true);
+  });
 
-  document.addEventListener("pointercancel", (e) => {
-    if (!gestureWasZoomed || e.pointerId !== activePointerId) return;
-
+  stage.addEventListener("pointerup", (e) => {
+    if (!isDragging) return;
     isDragging = false;
-    activePointerId = null;
-    gestureWasZoomed = false;
-    gestureCanFlip = false;
-    try { stage.releasePointerCapture(e.pointerId); } catch(err) {}
+    try { stage.releasePointerCapture(e.pointerId); } catch(err){}
+
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+    const minSwipeDist = 35;
+
+    // Zoom == 1 মোডে (যা এখন বাই-ডিফল্ট বড় দেখাচ্ছে) নিখুঁত সোয়াইপ
+    if (zoom === 1 && pageFlip && Math.abs(diffX) > minSwipeDist && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        pageFlip.flipNext();
+      } else {
+        pageFlip.flipPrev();
+      }
+    }
+  });
+
+  stage.addEventListener("pointercancel", () => {
+    isDragging = false;
+  });
+
+  // ---------------- সাইড বাটন নেভিগেশন ----------------
+  document.getElementById("sidePrevBtn").addEventListener("click", (e) => {
     e.stopPropagation();
-  }, true);
+    if (pageFlip) pageFlip.flipPrev();
+  });
+
+  document.getElementById("sideNextBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (pageFlip) pageFlip.flipNext();
+  });
 
   // ---------------- কাগজের সাউন্ড ----------------
   let audioCtx;
@@ -680,27 +635,25 @@
 
       let pWidth, pHeight;
 
+      // ডিফল্ট পেজ রেন্ডার সাইজ বাড়িয়ে বড় ও স্পষ্ট ভিউ সেট করা হলো
       if (isMobile) {
-        pWidth = stageW * 0.94;
+        pWidth = stageW * 0.98;
         pHeight = pWidth * aspect;
-        if (pHeight > stageH * 0.92) {
-          pHeight = stageH * 0.92;
-          pWidth = pHeight / aspect;
-        }
       } else {
-        let maxW = (stageW * 0.92) / 2;
-        let maxH = stageH * 0.88;
+        let maxW = (stageW * 0.98) / 2;
+        let maxH = stageH * 0.96;
 
         if (maxW * aspect > maxH) {
-          pHeight = maxH;
+          pHeight = maxH * 1.25; 
           pWidth = pHeight / aspect;
         } else {
-          pWidth = maxW;
+          pWidth = maxW * 1.25;
           pHeight = pWidth * aspect;
         }
       }
 
-      const canvasScale = Math.max(2, (pWidth * 2) / baseViewport.width);
+      // লেখার ক্ল্যারিটি আরও হাই-ডেফিনিশন করতে ক্যানভাস স্কেল বাড়ানো হলো
+      const canvasScale = Math.max(3, (pWidth * 2) / baseViewport.width);
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
